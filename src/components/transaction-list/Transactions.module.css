@@ -1,0 +1,44 @@
+/* src/components/Transactions.module.css */
+
+/* src/components/Transactions.module.css */
+
+.transactionsList {
+    background-color: #1e1e1e; /* Darker background for the list */
+    padding: 10px;
+    border-radius: 8px;
+    color: #e0e0e0; /* Light text color for contrast */
+  }
+  
+  .transactionItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid
+  }
+
+  .transactionDetails {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .paymentIcon {
+    width: 30px;
+    height: auto;
+  }
+  
+  .transactionAmount {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .transactionDescription {
+    color: #777;
+    font-size: 14px;
+  }
+  
+  .transactionTime {
+    font-size: 12px;
+    color: #aaa;
+  }
