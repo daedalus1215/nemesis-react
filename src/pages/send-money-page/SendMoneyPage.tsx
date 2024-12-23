@@ -1,58 +1,65 @@
-// src/components/SendMoneyPage.js
-
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import styles from "./SendMoneyPage.module.css"; // Assuming you're using CSS modules
-import { useAuth } from "react-oidc-context";
+import React, { useState } from 'react';
+import styles from './SendMoneyPage.module.css';
 
 const SendMoneyPage: React.FC = () => {
-  const auth = useAuth() as unknown as {user: {access_token: string}};
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [amount, setAmount] = useState<number | string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const response = await axios.get(`${import.meta.env.BASE_URL}/users`, {
-          headers: {
-            Authorization: `Bearer ${auth.user.access_token}`, // Replace with actual auth logic
-          },
-        });
-        setUsers(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch users");
-        setLoading(false);
-      }
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Ensure input is a valid number or empty
+    if (value === '' || /^[0-9]+(\.[0-9]{0,2})?$/.test(value)) {
+      setAmount(value);
+    }
+  };
+
+  const handlePay = async () => {
+    if (!amount || parseFloat(amount as string) <= 0) {
+      alert('Please enter a valid amount.');
+      return;
     }
 
-    fetchUsers();
-  }, []);
+    setIsSubmitting(true);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+    try {
+      // Example API call (replace with actual payment logic)
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulating network request
+      alert(`Payment of $${amount} successfully sent!`);
+      setAmount(''); // Reset the amount
+    } catch (error) {
+      console.error('Payment failed:', error);
+      alert('Payment failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <div className={styles.sendMoneyPage}>
+    <div className={styles['send-money-container']}>
       <h1>Send Money</h1>
-      <ul className={styles.userList}>
-        {users.map((user) => (
-          <li key={user.id} className={styles.userItem}>
-            <span>
-              {user.name} - {user.email}
-            </span>
-            <button onClick={() => handleSendMoney(user.id)}>Send</button>
-          </li>
-        ))}
-      </ul>
+      <p>Enter the amount you wish to send:</p>
+
+      <div className={styles['input-group']}>
+        <label htmlFor="amount">Amount (USD):</label>
+        <input
+          id="amount"
+          type="text"
+          value={amount}
+          onChange={handleAmountChange}
+          placeholder="Enter amount"
+          disabled={isSubmitting}
+        />
+      </div>
+
+      <button 
+        onClick={handlePay} 
+        disabled={isSubmitting || !amount || parseFloat(amount as string) <= 0}
+        className={styles['pay-button']}
+      >
+        {isSubmitting ? 'Processing...' : 'Pay'}
+      </button>
     </div>
   );
 };
-
-function handleSendMoney(userId) {
-  console.log(`Sending money to user with id ${userId}`);
-  // Here you would implement the logic to send money, like opening a modal or navigating to a transaction form
-}
 
 export default SendMoneyPage;
