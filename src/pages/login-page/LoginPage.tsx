@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./LoginPage.module.css";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
@@ -7,9 +7,11 @@ const LoginPage: React.FC = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  if (auth.isAuthenticated) {
-    navigate("/home");
-  }
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      navigate("/home"); // Navigate after render, avoiding the warning.
+    }
+  }, [auth.isAuthenticated, navigate]);
 
   return (
     <div className={styles.container}>
