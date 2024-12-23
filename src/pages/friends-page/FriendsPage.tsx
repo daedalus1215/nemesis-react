@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "react-oidc-context";
 import styles from "./FriendsPage.module.css"; // Assuming you're using CSS modules
+import { useNavigate } from "react-router-dom";
 
 const FriendsPage: React.FC = () => {
+  const navigate = useNavigate();
   const auth = useAuth() as unknown as {user: {access_token: string}};
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +51,7 @@ const FriendsPage: React.FC = () => {
             <span>
               {user.id} - {user.email}
             </span>
-            <button onClick={() => handleSendMoney(user.id)}>Send</button>
+            <button onClick={() => navigate(`/send-money/${user.id}`)}>Send</button>
           </li>
         ))}
       </ul>
