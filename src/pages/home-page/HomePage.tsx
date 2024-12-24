@@ -8,23 +8,37 @@ import styles from "./HomePage.module.css";
 import { useNavigate } from "react-router-dom";
 
 const HomePage: React.FC = () => {
-  const auth = useAuth();
+  const auth = useAuth() as unknown as {
+    isLoading: boolean;
+    error: { message: string };
+    isAuthenticated: string;
+    user: { access_token: string; profile: { email: string; sub: string } };
+  };
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState({ balance: 0 });
+  const [userInfo, setUserInfo] = useState({ balance: 0 } );
   const [transactions, setTransactions] = useState([]);
 
+  console.log(auth.user?.access_token);
   useEffect(() => {
     if (auth.isAuthenticated && auth.user) {
-      fetchUserData();
+      fetchUserData(auth.user?.profile.sub);
       fetchTransactions();
     }
-  }, [auth.isAuthenticated, auth.user]);
+  }, [auth.isAuthenticated, auth.user?.profile]);
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (userId: string) => {
     if (auth.user?.access_token) {
       try {
-        const response = await axios.get(`user.json`);
-        setUserInfo(response.data);
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}users/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.user.access_token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setUserInfo(response.data.user);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -33,7 +47,7 @@ const HomePage: React.FC = () => {
 
   const fetchTransactions = async () => {
     if (auth.user?.access_token) {
-      try {                  
+      try {
         const response = await axios.get("transactions.json");
         setTransactions(response.data);
       } catch (error) {
@@ -50,12 +64,12 @@ const HomePage: React.FC = () => {
       {userInfo && (
         <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center">
           <h2 className="text-3xl font-bold my-4">
-            Welcome, {auth.user?.profile?.email.replace(/@.*/, '')}
+            Welcome, {auth.user?.profile?.email.replace(/@.*/, "")}
           </h2>
           <p className="text-green-500 text-xl mb-6">
             <span className={styles.balance}>${userInfo.balance}</span>
           </p>
-          <Button onClick={() => navigate('/friends')}>Friends</Button>
+          <Button onClick={() => navigate("/friends")}>Friends</Button>
         </div>
       )}
       <h3>History</h3>
