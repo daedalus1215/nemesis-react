@@ -22,6 +22,7 @@ const SendMoneyPage: React.FC = () => {
   const [receivingUser, setReceivingUser] = useState<UserDetails | null>(null);
   const [currentUser, setCurrentUser] = useState<UserDetails | null>(null);
   const [amount, setAmount] = useState<number | string>("");
+  const [description, setDescription] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -61,6 +62,12 @@ const SendMoneyPage: React.FC = () => {
     }
   };
 
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+      setDescription(value);
+  };
+
+
   const handlePay = async () => {
     if (!amount || parseFloat(amount as string) <= 0) {
       alert("Please enter a valid amount.");
@@ -81,6 +88,7 @@ const SendMoneyPage: React.FC = () => {
         {
           receiverId: userId,
           amount: parseFloat(amount as string),
+          description
         },
         {
           headers: {
@@ -128,11 +136,12 @@ const SendMoneyPage: React.FC = () => {
                 placeholder="0.00"
                 disabled={isSubmitting}
               />
+              
             </div>
-            {/* <div className={styles["input-group"]}>
+            <div className={styles["input-group"]}>
             <label htmlFor="description">description:</label>
-              <input type="textarea" id='Description'/>
-            </div> */}
+              <input onChange={handleDescriptionChange} type="textarea" id='Description' />
+            </div>
           </div>
           <button
             onClick={handlePay}
