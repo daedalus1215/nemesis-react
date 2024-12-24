@@ -1,38 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import styles from "./SendMoneyPage.module.css";
 import axios from "axios";
+import { useAuth } from "react-oidc-context";
+
+import styles from "./SendMoneyPage.module.css";
 
 interface UserDetails {
-  id: string;
-  email: string;
+  user_id: string;
+  name: string;
+  balance: number;
 }
 
 const SendMoneyPage: React.FC = () => {
+  const auth = useAuth() as unknown as {
+    isLoading: boolean;
+    error: { message: string };
+    isAuthenticated: string;
+    user: { access_token: string; profile: { email: string; sub: string } };
+  };
   const { userId } = useParams<{ userId: string }>();
-  const [user, setUser] = useState<UserDetails | null>(null);
+  const [receivingUser, setReceivingUser] = useState<UserDetails | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserDetails | null>(null);
   const [amount, setAmount] = useState<number | string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-      
-      if (userId) {
-          fetchUserDetails();
-        }
-    }, [userId]);
-    
-    const fetchUserDetails = async () => {
+    if (userId) {
+      fetchUserData(userId, setReceivingUser);
+    }
+    if (auth.user) {
+      fetchUserData(auth.user.profile.sub, setCurrentUser);
+    }
+  }, [userId, auth.user]);
+
+  const fetchUserData = async (
+    userId: string,
+    setter: (userDetail: UserDetails) => void
+  ) => {
+    if (auth.user?.access_token) {
       try {
-        // Replace this with your actual API endpoint
-        const response = await axios.get(`/user.json`);
-        if (!response.data) throw new Error("Failed to fetch user details");
-        const data: UserDetails = await response.data;
-        setUser(data);
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}users/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.user.access_token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setter(response.data.user);
       } catch (error) {
-        console.error("Error fetching user details:", error);
-        alert("Could not fetch user details. Please try again later.");
+        console.error("Error fetching user data:", error);
       }
-    };
+    }
+  };
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value === "" || /^[0-9]+(\.[0-9]{0,2})?$/.test(value)) {
@@ -46,21 +67,32 @@ const SendMoneyPage: React.FC = () => {
       return;
     }
 
+    console.log("currentUser?.balance", currentUser?.balance);
+    if (parseFloat(amount as string) > (currentUser?.balance || 0)) {
+      alert("Insufficient balance");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Replace this with your payment API endpoint
-      const response = await fetch(`/api/payments`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}transactions`,
+        {
+          receiverId: userId,
           amount: parseFloat(amount as string),
-        }),
-      });
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.user.access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
 
-      if (!response.ok) throw new Error("Payment failed");
-      alert(`Successfully sent $${amount} to ${user?.email}!`);
+      if (!response.data) throw new Error("Payment failed");
+      alert(`Successfully sent $${amount} to ${receivingUser?.name}!`);
       setAmount("");
     } catch (error) {
       console.error("Payment failed:", error);
@@ -72,26 +104,36 @@ const SendMoneyPage: React.FC = () => {
 
   return (
     <div className={styles["send-money-container"]}>
-      <h1>Send Money</h1>
-
-      {user ? (
+      {receivingUser ? (
         <>
-          <p>
-            You're sending money to <strong>{user?.email?.replace(/@.*/, '')}</strong>.
-          </p>
-
-          <div className={styles["input-group"]}>
-            <label htmlFor="amount">Amount:</label>
-            <input
-              id="amount"
-              type="money"
-              value={amount}
-              onChange={handleAmountChange}
-              placeholder="0.00"
-              disabled={isSubmitting}
-            />
+          <div>
+            You're sending money to{" "}
+            <span className={styles.name}>{receivingUser.name}</span>
           </div>
-
+          <div>
+            Their balance: <strong>${receivingUser?.balance}</strong>
+          </div>
+          <hr />
+          <div>
+            Your balance: <strong>${currentUser?.balance}</strong>
+          </div>
+          <div>
+            <div className={styles["input-group"]}>
+              <label htmlFor="amount">Amount:</label>
+              <input
+                id="amount"
+                type="money"
+                value={amount}
+                onChange={handleAmountChange}
+                placeholder="0.00"
+                disabled={isSubmitting}
+              />
+            </div>
+            {/* <div className={styles["input-group"]}>
+            <label htmlFor="description">description:</label>
+              <input type="textarea" id='Description'/>
+            </div> */}
+          </div>
           <button
             onClick={handlePay}
             disabled={
