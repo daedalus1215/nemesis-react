@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (auth.isAuthenticated && auth.user) {
       fetchUserData(auth.user?.profile.sub);
-      fetchTransactions();
+      fetchTransactions(auth.user?.profile.sub);
     }
   }, [auth.isAuthenticated, auth.user?.profile]);
 
@@ -45,11 +45,19 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = async (userId: string) => {
     if (auth.user?.access_token) {
       try {
-        const response = await axios.get("transactions.json");
-        setTransactions(response.data);
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}transactions/user-id/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.user.access_token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setTransactions(response.data.transactions);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }
@@ -73,7 +81,7 @@ const HomePage: React.FC = () => {
         </div>
       )}
       <h3>History</h3>
-      <TransactionsList transactions={transactions} />
+      <TransactionsList transactions={transactions} userId={auth.user?.profile.sub} />
     </div>
   );
 };
