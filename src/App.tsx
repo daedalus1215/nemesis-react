@@ -9,11 +9,16 @@ import SendMoneyPage from "./pages/send-money-page/SendMoneyPage";
 export function App() {
   return (
     <Router>
-      <header>
-        <nav>
-          <div className={styles["title"]}>Nemesis</div>
-        </nav>
-      </header>
+<header>
+  <nav className={styles.navbar}>
+    <img
+      src="/favicon.svg"
+      alt="App Logo"
+      className={styles.logo}
+    />
+    <div className={styles.title}>Nemesis</div>
+  </nav>
+</header>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route element={<AuthGuard />}>
