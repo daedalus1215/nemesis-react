@@ -1,24 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 import HomePage from "./pages/home-page/HomePage";
 import FriendsPage from "./pages/friends-page/FriendsPage";
 import LoginPage from "./pages/login-page/LoginPage";
-import styles from "./App.module.css";
 import AuthGuard from "./auth/AuthGuard";
 import SendMoneyPage from "./pages/send-money-page/SendMoneyPage";
+import Navbar from "./components/navbar/Navbar";
 
 export function App() {
   return (
     <Router>
-<header>
-  <nav className={styles.navbar}>
-    <img
-      src="/favicon.svg"
-      alt="App Logo"
-      className={styles.logo}
-    />
-    <div className={styles.title}>Nemesis</div>
-  </nav>
-</header>
+      <header>
+        <Navbar />
+      </header>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route element={<AuthGuard />}>
