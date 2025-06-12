@@ -2,28 +2,54 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
 } from "react-router-dom";
-import HomePage from "./pages/home-page/HomePage";
-import FriendsPage from "./pages/friends-page/FriendsPage";
-import LoginPage from "./pages/login-page/LoginPage";
-import AuthGuard from "./auth/AuthGuard";
-import SendMoneyPage from "./pages/send-money-page/SendMoneyPage";
-import Navbar from "./components/navbar/Navbar";
+import { LoginPage } from "./pages/LoginPage/LoginPage";
+
+import { useAuth } from "./auth/useAuth";
+import { LandingPage } from "./pages/LandingPage/LandingPage";
+import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
+import { AuthProvider } from "./auth/AuthContext";
+
+function AppRoutes() {
+  const { isAuthenticated } = useAuth();
+  
+  if (isAuthenticated) {
+    return (
+      <>
+        <Routes>
+        {/* <header>
+        <Navbar />
+      </header> */}
+          {/* <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} /> */}
+          {/* <Route path="/friends" element={<FriendsPage />} /> */}
+          {/* <Route path="/send-money/:userId" element={<SendMoneyPage />} /> */}
+        </Routes>
+      </>
+    );
+  }
+
+  return (
+    <Routes>
+      {/* <header>
+        <Navbar />
+      </header> */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      {/* Redirect unauthenticated users trying to access protected pages */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
+}
 
 export function App() {
   return (
-    <Router>
-      <header>
-        <Navbar />
-      </header>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route element={<AuthGuard />}>
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/friends" element={<FriendsPage />} />
-          <Route path="/send-money/:userId" element={<SendMoneyPage />} />
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider >
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
   );
 }
