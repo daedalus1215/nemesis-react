@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import styles from './Login.module.css';
 import { Logo } from '../../../components/Logo/Logo';
+import styles from './Login.module.css';
 
 interface LoginProps {
   onLogin: (username: string, password: string) => Promise<boolean>;
@@ -34,8 +34,8 @@ export function Login({ onLogin }: LoginProps) {
     <div className={styles.loginContainer}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <h2 className={styles.title}>
-          <Logo height={75} />
-          <span>Login</span>
+          <Logo height={50} />
+          <span className={styles.titleText}>Login</span>
         </h2>
         {error && <div className={styles.error}>{error}</div>}
         <div className={styles.formGroup}>
