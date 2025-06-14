@@ -7,16 +7,22 @@ import styles from './RegisterPage.module.css';
 export function RegisterPage() {
   const navigate = useNavigate();
   const { register, isAuthenticated } = useAuth();
+  const [backendError, setBackendError] = React.useState<string | null>(null);
 
   const handleRegister = async (username: string, password: string) => {
+    setBackendError(null);
     try {
-      const success = await register(username, password);
-      if (success) {
+      const result = await register(username, password);
+      console.log('result', result);  
+      if (result === true) {
         navigate('/login', { replace: true });
+        return true;
+      } else {
+        setBackendError(result);
+        return false;
       }
-      return success;
     } catch (error) {
-      console.error('Registration error:', error);
+      setBackendError('An error occurred during registration');
       return false;
     }
   };
@@ -30,7 +36,7 @@ export function RegisterPage() {
 
   return (
     <div className={styles.registerPage}>
-      <Register onRegister={handleRegister} />
+      <Register onRegister={handleRegister} backendError={backendError} />
     </div>
   );
 } 

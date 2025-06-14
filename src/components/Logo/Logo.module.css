@@ -1,6 +1,6 @@
 .logo {
   width: auto;
-  filter: brightness(0) invert(1); /* Make SVG white */
+  /* filter: brightness(0) invert(1); Make SVG white */
   transition: transform 0.2s ease;
 }
 
