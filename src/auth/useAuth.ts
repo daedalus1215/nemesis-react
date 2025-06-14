@@ -1,6 +1,7 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import api from '../api/axios.interceptor';
+import { AxiosError } from 'axios';
 
 type User = {
   id: string;
@@ -12,7 +13,7 @@ type AuthContextType = {
   user: User | null;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
-  register: (username: string, password: string) => Promise<boolean>;
+  register: (username: string, password: string) => Promise<true | string>;
 }
 
 type JwtPayload = {
@@ -37,7 +38,7 @@ export const useAuthProvider = () => {
         username: decoded.username
       };
       return user;
-    } catch (error) {
+    } catch {
       localStorage.removeItem('jwt_token');
       return null;
     }
@@ -75,7 +76,7 @@ export const useAuthProvider = () => {
     setUser(null);
   }, []);
 
-  const register = useCallback(async (username: string, password: string): Promise<boolean> => {
+  const register = useCallback(async (username: string, password: string): Promise<true | string> => {
     try {
       await api.post('/users/register', {
         username,
@@ -83,7 +84,7 @@ export const useAuthProvider = () => {
       });
       return true;
     } catch (error) {
-      return false;
+      return error?.response.data.message;
     }
   }, []);
 

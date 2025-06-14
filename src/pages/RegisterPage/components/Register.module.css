@@ -28,6 +28,10 @@
   margin-bottom: 2rem;
 } 
 
+.titleText {
+  margin-left: 1rem;
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;

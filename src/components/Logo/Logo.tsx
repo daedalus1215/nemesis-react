@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../assets/chronus.svg';
+import logo from '../../assets/favicon.svg';
 import styles from './Logo.module.css';
 
 interface LogoProps {
@@ -9,9 +9,9 @@ interface LogoProps {
 }
 
 export const Logo: React.FC<LogoProps> = ({ 
-  height = 40, 
+  height = 20, 
   className = '', 
-  alt = 'Chronus Logo' 
+  alt = 'Nemesis Logo' 
 }: LogoProps) => {
   return (
     <img 

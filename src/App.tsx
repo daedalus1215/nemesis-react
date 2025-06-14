@@ -10,6 +10,7 @@ import { useAuth } from "./auth/useAuth";
 import { LandingPage } from "./pages/LandingPage/LandingPage";
 import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { AuthProvider } from "./auth/AuthContext";
+import { HomePage } from "./pages/home-page/HomePage";
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -21,8 +22,8 @@ function AppRoutes() {
         {/* <header>
         <Navbar />
       </header> */}
-          {/* <Route path="/" element={<HomePage />} />
-          <Route path="/home" element={<HomePage />} /> */}
+          {/* <Route path="/" element={<HomePage />} /> */}
+          <Route path="/" element={<HomePage />} /> 
           {/* <Route path="/friends" element={<FriendsPage />} /> */}
           {/* <Route path="/send-money/:userId" element={<SendMoneyPage />} /> */}
         </Routes>
