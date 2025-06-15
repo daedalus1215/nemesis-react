@@ -15,7 +15,7 @@ export const Landing: React.FC<LandingProps> = ({ navigate }) => {
 
         <div className={styles.actionSection}>
           <Typography variant="h2" className={styles.title}>
-            <span className={styles.titleText}>Nemesis</span>
+            Nemesis
           </Typography>
           <div className={styles.buttonGroup}>
             <Button

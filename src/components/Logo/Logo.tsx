@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../assets/apple-touch-icon.png';
+import logo from '../../assets/nemesis.svg';
 import styles from './Logo.module.css';
 
 interface LogoProps {
