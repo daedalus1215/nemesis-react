@@ -1,13 +1,18 @@
+import React from "react";
 import { AccountBalance, AttachMoney } from "@mui/icons-material";
 import {
   BottomNavigationAction,
   BottomNavigation as MuiBottomNavigation,
 } from "@mui/material";
 import styles from "./BottomNavigation.module.css";
-import React from "react";
 
-export const BottomNavigation: React.FC = () => {
-  const [value, setValue] = React.useState(0);
+const labels = {
+  Home: "Home",
+  Send: "Send",
+} as const;
+
+export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({selected}) => {
+  const [value, setValue] = React.useState(selected);
   return (
     <MuiBottomNavigation
       showLabels
@@ -17,8 +22,8 @@ export const BottomNavigation: React.FC = () => {
       }}
       className={styles.bottomNavigation}
     >
-      <BottomNavigationAction label="Home" icon={<AccountBalance />} href="/" />
-      <BottomNavigationAction label="Send" icon={<AttachMoney />} href="/money" />
+      <BottomNavigationAction value="Home" label={labels.Home} icon={<AccountBalance />} href="/" />
+      <BottomNavigationAction value="Send" label={labels.Send} icon={<AttachMoney />} href="/money" />
     </MuiBottomNavigation>
   );
 };

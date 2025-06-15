@@ -72,7 +72,7 @@ export const HomePage: React.FC = () => {
             A Button
           </button>
 
-          <BottomNavigation />
+          <BottomNavigation selected="Home" />
         </div>
       </Container>
     </>
