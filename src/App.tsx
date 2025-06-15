@@ -10,7 +10,7 @@ import { useAuth } from "./auth/useAuth";
 import { LandingPage } from "./pages/LandingPage/LandingPage";
 import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { AuthProvider } from "./auth/AuthContext";
-import { HomePage } from "./pages/home-page/HomePage";
+import { HomePage } from "./pages/HomePage/HomePage";
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();

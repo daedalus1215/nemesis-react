@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Logo } from "../../../components/Logo/Logo";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import styles from "./Register.module.css";
 
-interface RegisterProps {
+type RegisterProps = {
   onRegister: (username: string, password: string) => Promise<boolean>;
   backendError?: string | null;
-}
+};
 
 export const Register: React.FC<RegisterProps> = ({
   onRegister,
@@ -37,44 +39,55 @@ export const Register: React.FC<RegisterProps> = ({
     <div className={styles.registerContainer}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <h2 className={styles.title}>
-          <Logo height={50} />
+          <Logo className={styles.logo} />
           <span className={styles.titleText}>Register</span>
         </h2>
         {error && <div className={styles.error}>{error}</div>}
         {backendError && <div className={styles.error}>{backendError}</div>}
-        <div className={styles.formGroup}>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className={styles.submitButton}>
+        <TextField
+          label="Username"
+          variant="outlined"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Password"
+          type="password"
+          variant="outlined"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Confirm Password"
+          type="password"
+          variant="outlined"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{
+            borderRadius: "9999px",
+            py: 1.5,
+            fontWeight: 600,
+            fontSize: "1rem",
+            mt: 2,
+          }}
+        >
           Register
-        </button>
+        </Button>
       </form>
       <div className={styles.loginLink}>
         Already have an account? <Link to="/login">Login here</Link>

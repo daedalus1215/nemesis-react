@@ -1,8 +1,8 @@
 .loginContainer {
   width: 100%;
   max-width: 400px;
-  padding: 2rem;
-  margin:auto;
+  /* padding: 2rem; */
+  /* margin: auto; */
   border-radius: 16px;
   background-color: #111;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -11,7 +11,6 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
 }
 
 .form h2 {
@@ -26,10 +25,14 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
-} 
+}
 
 .titleText {
   margin-left: 1rem;
+}
+
+.logo {
+  height: 400px;
 }
 
 .formGroup {
@@ -96,4 +99,4 @@
 
 .registerLink a:hover {
   color: #4f46e5;
-} 
+}

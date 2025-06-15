@@ -28,58 +28,18 @@
   margin-bottom: 2rem;
 } 
 
+.logo {
+  height: 400px;
+}
+
 .titleText {
   margin-left: 1rem;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.formGroup label {
-  color: #e5e7eb;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.formGroup input {
-  padding: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #374151;
-  background-color: #1a1a1a;
-  color: #fff;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.formGroup input:focus {
-  outline: none;
-  border-color: #6366f1;
 }
 
 .error {
   color: #ef4444;
   font-size: 0.875rem;
   margin-bottom: 1rem;
-}
-
-.submitButton {
-  width: 100%;
-  padding: 0.875rem;
-  border-radius: 9999px;
-  border: none;
-  background-color: #6366f1;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submitButton:hover {
-  background-color: #4f46e5;
 }
 
 .loginLink {
