@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
 import { useUserBalance } from "./useUserBalance";
+import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import styles from "./HomePage.module.css";
 
 export const HomePage: React.FC = () => {
@@ -12,7 +13,6 @@ export const HomePage: React.FC = () => {
     isLoading: isBalanceLoading,
     error: balanceError,
   } = useUserBalance();
-
   if (!user) {
     return null; // This shouldn't happen due to ProtectedRoute, but TypeScript needs it
   }
@@ -68,6 +68,8 @@ export const HomePage: React.FC = () => {
       <button className={styles.fab} aria-label="Create new note">
         A Button
       </button>
+
+      <BottomNavigation />
     </div>
   );
 };
