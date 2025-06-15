@@ -6,7 +6,8 @@
   border-radius: 16px;
   background-color: #111;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}  
+}
+
 .content {
   height: 50%;
   display: flex;
@@ -20,7 +21,7 @@
   height: 150px;
 }
 
-  
+
 .actionSection {
   flex: 9;
   display: flex;
@@ -62,4 +63,4 @@
 
 .loginLink a:hover {
   color: #4f46e5;
-} 
+}

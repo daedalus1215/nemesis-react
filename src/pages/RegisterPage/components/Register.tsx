@@ -42,7 +42,7 @@ export const Register: React.FC<RegisterProps> = ({
         <Logo className={styles.logo} />
 
         <div className={styles.actionSection}>
-        <Typography variant="h2">Register</Typography>
+          <Typography variant="h2">Register</Typography>
           <form onSubmit={handleSubmit} className={styles.form}>
             {error && <div className={styles.error}>{error}</div>}
             {backendError && <div className={styles.error}>{backendError}</div>}

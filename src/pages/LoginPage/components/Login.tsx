@@ -39,7 +39,9 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
         <Logo className={styles.logo} />
 
         <div className={styles.actionSection}>
-          <Typography variant="h2" className={styles.title}>Login</Typography>
+          <Typography variant="h2" className={styles.title}>
+            Login
+          </Typography>
           <form onSubmit={handleSubmit} className={styles.form}>
             {error && <div className={styles.error}>{error}</div>}
             <TextField
