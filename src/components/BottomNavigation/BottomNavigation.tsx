@@ -17,8 +17,8 @@ export const BottomNavigation: React.FC = () => {
       }}
       className={styles.bottomNavigation}
     >
-      <BottomNavigationAction label="Home" icon={<AccountBalance />} />
-      <BottomNavigationAction label="Send" icon={<AttachMoney />} />
+      <BottomNavigationAction label="Home" icon={<AccountBalance />} href="/" />
+      <BottomNavigationAction label="Send" icon={<AttachMoney />} href="/money" />
     </MuiBottomNavigation>
   );
 };

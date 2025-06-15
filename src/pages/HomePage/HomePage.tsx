@@ -3,6 +3,8 @@ import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
 import { useUserBalance } from "./useUserBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import ResponsiveAppBar from "../../components/AppBar/ResponsiveAppBar";
+import Container from "@mui/material/Container";
 import styles from "./HomePage.module.css";
 
 export const HomePage: React.FC = () => {
@@ -58,18 +60,21 @@ export const HomePage: React.FC = () => {
   }
 
   return (
-    <div className={styles.homePage}>
-      {/* <Header /> */}
-      <h1>Home Page</h1>
-      <main className={styles.main}>
-        {balanceContent}
-        <div>Welcome, {userDetails.username}!</div>
-      </main>
-      <button className={styles.fab} aria-label="Create new note">
-        A Button
-      </button>
+    <>
+      <ResponsiveAppBar title="Home" username={userDetails.username}/>
+      <Container maxWidth="xl">
+        <div className={styles.homePage}>
+          <main className={styles.main}>
+            {balanceContent}
+            <div>Welcome, {userDetails.username}!</div>
+          </main>
+          <button className={styles.fab} aria-label="Create new note">
+            A Button
+          </button>
 
-      <BottomNavigation />
-    </div>
+          <BottomNavigation />
+        </div>
+      </Container>
+    </>
   );
 };
