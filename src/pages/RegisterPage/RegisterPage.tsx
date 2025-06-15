@@ -1,8 +1,8 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Register } from './components/Register';
-import { useAuth } from '../../auth/useAuth';
-import styles from './RegisterPage.module.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Register } from "./components/Register";
+import { useAuth } from "../../auth/useAuth";
+import styles from "./RegisterPage.module.css";
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -13,16 +13,16 @@ export function RegisterPage() {
     setBackendError(null);
     try {
       const result = await register(username, password);
-      console.log('result', result);  
+      console.log("result", result);
       if (result === true) {
-        navigate('/login', { replace: true });
+        navigate("/login", { replace: true });
         return true;
       } else {
         setBackendError(result);
         return false;
       }
     } catch (error) {
-      setBackendError('An error occurred during registration');
+      setBackendError("An error occurred during registration");
       return false;
     }
   };
@@ -30,7 +30,7 @@ export function RegisterPage() {
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -39,4 +39,4 @@ export function RegisterPage() {
       <Register onRegister={handleRegister} backendError={backendError} />
     </div>
   );
-} 
+}
