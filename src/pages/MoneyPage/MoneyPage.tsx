@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 import BackspaceIcon from "@mui/icons-material/Backspace";
 import { useAuth } from "../../auth/useAuth";
 import { SendMoneyBottomDrawer } from "./SendMoneyBottomDrawer/SendMoneyBottomDrawer";
+import { MoneyDialPad } from "./MoneyDialPad";
 
 const numberPadKeys = [
   ["1", "2", "3"],
@@ -41,17 +42,6 @@ export const MoneyPage: React.FC = () => {
       }
       setState({ ...state, [anchor]: open });
     };
-
-  const handleKeyPress = (key: string) => {
-    if (key === "⌫") {
-      setAmount((prev) => prev.slice(0, -1));
-    } else if (key === ".") {
-      if (!amount.includes(".")) setAmount((prev) => prev + ".");
-    } else {
-      if (amount.length < 7)
-        setAmount((prev) => (prev === "0" ? key : prev + key));
-    }
-  };
 
   return (
     <Box
@@ -86,39 +76,7 @@ export const MoneyPage: React.FC = () => {
         >
           {getDisplayAmount(amount)}
         </Typography>
-        {/* @TODO: Abstract this into a component */}
-        <Box sx={{ width: "100%", maxWidth: 320, mb: 2 }}>
-          {numberPadKeys.map((row, rowIdx) => (
-            <Grid
-              container
-              spacing={1}
-              key={rowIdx}
-              justifyContent="center"
-              sx={{ mb: rowIdx < numberPadKeys.length - 1 ? 1 : 0 }}
-            >
-              {row.map((key, colIdx) => (
-                <Grid item xs={4} key={key + colIdx}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleKeyPress(key)}
-                    sx={{
-                      width: "100%",
-                      height: 60,
-                      fontSize: "2rem",
-                      background: "var(--color-surface)",
-                      color: "var(--color-text-primary)",
-                      borderRadius: 2,
-                      boxShadow: "none",
-                      "&:hover": { background: "var(--color-primary-dark)" },
-                    }}
-                  >
-                    {key === "⌫" ? <BackspaceIcon fontSize="large" /> : key}
-                  </Button>
-                </Grid>
-              ))}
-            </Grid>
-          ))}
-        </Box>
+        <MoneyDialPad amount={amount} setAmount={setAmount} />
         <Box sx={{ display: "flex", gap: 2, width: "100%", maxWidth: 320 }}>
           <Button
             variant="contained"
@@ -150,7 +108,10 @@ export const MoneyPage: React.FC = () => {
             PayI
           </Button>
         </Box>
-        <SendMoneyBottomDrawer open={state["bottom"]} onClose={toggleDrawer("bottom", false)} />
+        <SendMoneyBottomDrawer
+          open={state["bottom"]}
+          onClose={toggleDrawer("bottom", false)}
+        />
       </Container>
       <BottomNavigation selected="Send" />
     </Box>
