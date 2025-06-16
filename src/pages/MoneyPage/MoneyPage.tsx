@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ResponsiveAppBar from "../../components/AppBar/ResponsiveAppBar";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
@@ -7,7 +6,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useAuth } from "../../auth/useAuth";
 import { SendMoneyBottomDrawer } from "./SendMoneyBottomDrawer/SendMoneyBottomDrawer";
-import { MoneyDialPad } from "./MoneyDialPad.tsx";
+import { MoneyDialPad } from "./components/MoneyDialPad.tsx";
+import MoneyPageAppBar from "./components/MoneyPageAppBar.tsx";
 
 const getDisplayAmount = (amount: string) => {
   if (!amount || amount === ".") return "$0";
@@ -44,7 +44,7 @@ export const MoneyPage: React.FC = () => {
         color: "var(--color-text-primary)",
       }}
     >
-      <ResponsiveAppBar title="Send Money" username={user?.username || ""} />
+      <MoneyPageAppBar username={user?.username || ""} />
       <Container
         maxWidth="xs"
         sx={{
@@ -96,7 +96,7 @@ export const MoneyPage: React.FC = () => {
               "&:hover": { background: "var(--color-primary-light)" },
             }}
           >
-            PayI
+            Pay
           </Button>
         </Box>
         <SendMoneyBottomDrawer

@@ -3,7 +3,7 @@ import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
 import { useUserBalance } from "./useUserBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
-import ResponsiveAppBar from "../../components/AppBar/ResponsiveAppBar";
+import BaseAppBar from "../../components/BaseAppBar/BaseAppBar";
 import Container from "@mui/material/Container";
 import styles from "./HomePage.module.css";
 
@@ -61,7 +61,11 @@ export const HomePage: React.FC = () => {
 
   return (
     <>
-      <ResponsiveAppBar title="Home" username={userDetails.username}/>
+      <BaseAppBar
+        title="Home"
+        username={userDetails.username}
+        backgroundColor="var(--color-surface)"
+      />
       <Container maxWidth="xl">
         <div className={styles.homePage}>
           <main className={styles.main}>
