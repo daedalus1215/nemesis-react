@@ -85,7 +85,7 @@ export const MoneyPage: React.FC = () => {
             Pay
           </Button>
         </Box>
-        <SendMoneyBottomDrawer open={open} onClose={handleClose} />
+        <SendMoneyBottomDrawer open={open} onClose={handleClose} amount={amount} />
       </Container>
       <BottomNavigation selected="Send" />
     </Box>
