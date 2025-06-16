@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import BackspaceIcon from "@mui/icons-material/Backspace";
 import { useAuth } from "../../auth/useAuth";
+import { SendMoneyBottomDrawer } from "./SendMoneyBottomDrawer/SendMoneyBottomDrawer";
 
 const numberPadKeys = [
   ["1", "2", "3"],
@@ -24,6 +25,22 @@ const getDisplayAmount = (amount: string) => {
 export const MoneyPage: React.FC = () => {
   const [amount, setAmount] = useState("");
   const { user } = useAuth();
+  const [state, setState] = useState({
+    bottom: false,
+  });
+  const toggleDrawer =
+    (anchor: string, open: boolean) =>
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        ((event as React.KeyboardEvent).key === "Tab" ||
+          (event as React.KeyboardEvent).key === "Shift")
+      ) {
+        return;
+      }
+      setState({ ...state, [anchor]: open });
+    };
 
   const handleKeyPress = (key: string) => {
     if (key === "⌫") {
@@ -31,14 +48,32 @@ export const MoneyPage: React.FC = () => {
     } else if (key === ".") {
       if (!amount.includes(".")) setAmount((prev) => prev + ".");
     } else {
-      if (amount.length < 7) setAmount((prev) => (prev === "0" ? key : prev + key));
+      if (amount.length < 7)
+        setAmount((prev) => (prev === "0" ? key : prev + key));
     }
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--color-primary)", color: "var(--color-text-primary)" }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "var(--color-primary)",
+        color: "var(--color-text-primary)",
+      }}
+    >
       <ResponsiveAppBar title="Send Money" username={user?.username || ""} />
-      <Container maxWidth="xs" sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+      <Container
+        maxWidth="xs"
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Typography
           variant="h2"
           sx={{
@@ -74,7 +109,7 @@ export const MoneyPage: React.FC = () => {
                       color: "var(--color-text-primary)",
                       borderRadius: 2,
                       boxShadow: "none",
-                      '&:hover': { background: "var(--color-primary-dark)" },
+                      "&:hover": { background: "var(--color-primary-dark)" },
                     }}
                   >
                     {key === "⌫" ? <BackspaceIcon fontSize="large" /> : key}
@@ -94,13 +129,14 @@ export const MoneyPage: React.FC = () => {
               fontWeight: 700,
               fontSize: "1.2rem",
               py: 2,
-              '&:hover': { background: "var(--color-secondary-dark)" },
+              "&:hover": { background: "var(--color-secondary-dark)" },
             }}
           >
             Request
           </Button>
           <Button
             variant="contained"
+            onClick={toggleDrawer("bottom", true)}
             sx={{
               flex: 1,
               background: "var(--color-primary-dark)",
@@ -108,12 +144,13 @@ export const MoneyPage: React.FC = () => {
               fontWeight: 700,
               fontSize: "1.2rem",
               py: 2,
-              '&:hover': { background: "var(--color-primary-light)" },
+              "&:hover": { background: "var(--color-primary-light)" },
             }}
           >
-            Pay
+            PayI
           </Button>
         </Box>
+        <SendMoneyBottomDrawer open={state["bottom"]} onClose={toggleDrawer("bottom", false)} />
       </Container>
       <BottomNavigation selected="Send" />
     </Box>
