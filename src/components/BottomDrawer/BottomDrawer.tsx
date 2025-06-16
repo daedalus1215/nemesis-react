@@ -2,7 +2,7 @@ import { Drawer, PaperProps } from "@mui/material";
 
 type BottomDrawerProps = {
   open: boolean;
-  onClose: (event: KeyboardEvent | MouseEvent) => void;
+  onClose: () => void;
   children: React.ReactNode;
   PaperProps?: PaperProps;
 };
@@ -11,7 +11,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({ open, onClose, child
   <Drawer
     anchor="bottom"
     open={open}
-    onClose={onClose}
+    onClose={() => onClose()}
     PaperProps={PaperProps}
   >
     {/* ...Box, IconButton, etc. */}

@@ -70,6 +70,7 @@ export const MoneyPage: React.FC = () => {
             Request
           </Button>
           <Button
+            disabled={!amount || amount === "0"}
             variant="contained"
             onClick={handleOpen}
             sx={{
