@@ -5,18 +5,9 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import BackspaceIcon from "@mui/icons-material/Backspace";
 import { useAuth } from "../../auth/useAuth";
 import { SendMoneyBottomDrawer } from "./SendMoneyBottomDrawer/SendMoneyBottomDrawer";
-import { MoneyDialPad } from "./MoneyDialPad";
-
-const numberPadKeys = [
-  ["1", "2", "3"],
-  ["4", "5", "6"],
-  ["7", "8", "9"],
-  [".", "0", "⌫"],
-];
+import { MoneyDialPad } from "./MoneyDialPad.tsx";
 
 const getDisplayAmount = (amount: string) => {
   if (!amount || amount === ".") return "$0";
