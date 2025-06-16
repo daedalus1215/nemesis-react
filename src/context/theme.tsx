@@ -4,10 +4,14 @@ const themeOptions: ThemeOptions = {
   palette: {
     mode: 'dark',
     primary: {
-      main: '#0f0', // Indigo 500
+      main: '#8be75f',
+      light: '#A8F086',
+      dark: '#72DD3F',
     },
     secondary: {
-      main: '#0f0', // Bright green (matches your a color)
+      main: '#CF55B4',
+      light: '#E17DCB',
+      dark: '#BB359D',
     },
     background: {
       default: '#1a1a1a',
@@ -16,6 +20,7 @@ const themeOptions: ThemeOptions = {
     text: {
       primary: '#fff',
       secondary: '#9ca3af',
+      disabled: '#6b7280',
     },
     error: {
       main: '#ef4444',

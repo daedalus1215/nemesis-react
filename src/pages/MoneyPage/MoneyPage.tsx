@@ -8,6 +8,7 @@ import { useAuth } from "../../auth/useAuth";
 import { SendMoneyBottomDrawer } from "./SendMoneyBottomDrawer/SendMoneyBottomDrawer";
 import { MoneyDialPad } from "./components/MoneyDialPad.tsx";
 import MoneyPageAppBar from "./components/MoneyPageAppBar.tsx";
+import { useBottomDrawer } from "../../components/BottomDrawer/useBottomDrawer";
 
 const getDisplayAmount = (amount: string) => {
   if (!amount || amount === ".") return "$0";
@@ -17,22 +18,7 @@ const getDisplayAmount = (amount: string) => {
 export const MoneyPage: React.FC = () => {
   const [amount, setAmount] = useState("");
   const { user } = useAuth();
-  const [state, setState] = useState({
-    bottom: false,
-  });
-  const toggleDrawer =
-    (anchor: string, open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-      setState({ ...state, [anchor]: open });
-    };
+  const { open, handleOpen, handleClose } = useBottomDrawer();
 
   return (
     <Box
@@ -85,7 +71,7 @@ export const MoneyPage: React.FC = () => {
           </Button>
           <Button
             variant="contained"
-            onClick={toggleDrawer("bottom", true)}
+            onClick={handleOpen}
             sx={{
               flex: 1,
               background: "var(--color-primary-dark)",
@@ -99,10 +85,7 @@ export const MoneyPage: React.FC = () => {
             Pay
           </Button>
         </Box>
-        <SendMoneyBottomDrawer
-          open={state["bottom"]}
-          onClose={toggleDrawer("bottom", false)}
-        />
+        <SendMoneyBottomDrawer open={open} onClose={handleClose} />
       </Container>
       <BottomNavigation selected="Send" />
     </Box>
