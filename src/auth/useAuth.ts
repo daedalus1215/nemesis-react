@@ -1,7 +1,6 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import api from '../api/axios.interceptor';
-import { AxiosError } from 'axios';
 
 type User = {
   id: string;
@@ -83,8 +82,8 @@ export const useAuthProvider = () => {
         password,
       });
       return true;
-    } catch (error) {
-      return error?.response.data.message;
+    } catch (error: unknown) {
+      return (error as { response: { data: { message: string } } }).response.data.message;
     }
   }, []);
 

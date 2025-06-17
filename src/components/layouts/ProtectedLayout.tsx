@@ -1,17 +1,16 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Navbar from '../navbar/Navbar';
-import AuthGuard from '../../auth/AuthGuard';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Navbar from "../navbar/Navbar";
 
 export const ProtectedLayout: React.FC = () => {
   return (
-    <AuthGuard>
+    <>
       <header>
         <Navbar />
       </header>
       <main>
         <Outlet />
       </main>
-    </AuthGuard>
+    </>
   );
-}; 
+};

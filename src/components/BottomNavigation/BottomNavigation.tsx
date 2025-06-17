@@ -17,7 +17,7 @@ export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({sel
     <MuiBottomNavigation
       showLabels
       value={value}
-      onChange={(event, newValue) => {
+      onChange={(_, newValue) => {
         setValue(newValue);
       }}
       className={styles.bottomNavigation}

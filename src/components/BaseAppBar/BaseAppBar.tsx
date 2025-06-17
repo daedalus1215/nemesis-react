@@ -12,7 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { SxProps, Theme } from "@mui/material/styles";
 
-type ResponsiveAppBarProps = {
+export type BaseAppBarProps = {
   title: string;
   username: string;
   className?: string;
@@ -29,7 +29,7 @@ export const BaseAppBar = ({
   backgroundColor,
   color,
   sx,
-}: ResponsiveAppBarProps) => {
+}: BaseAppBarProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );

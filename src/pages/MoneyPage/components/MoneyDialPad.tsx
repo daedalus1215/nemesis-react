@@ -1,8 +1,6 @@
 import React from "react";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import BackspaceIcon from "@mui/icons-material/Backspace";
+import { Box, Grid, Button } from '@mui/material';
+import BackspaceIcon from '@mui/icons-material/Backspace';
 
 type MoneyDialPadProps = {
   amount: string;
@@ -39,6 +37,7 @@ const MoneyDialPad: React.FC<MoneyDialPadProps> = ({ amount, setAmount }) => {
           sx={{ mb: rowIdx < numberPadKeys.length - 1 ? 1 : 0 }}
         >
           {row.map((key, colIdx) => (
+            // @ts-expect-error MUI Grid type resolution issue
             <Grid item xs={4} key={key + colIdx}>
               <Button
                 variant="contained"

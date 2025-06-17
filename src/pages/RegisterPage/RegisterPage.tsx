@@ -21,8 +21,8 @@ export function RegisterPage() {
         setBackendError(result);
         return false;
       }
-    } catch (error) {
-      setBackendError("An error occurred during registration");
+    } catch (error: unknown) {
+      setBackendError("An error occurred during registration: " + error);
       return false;
     }
   };

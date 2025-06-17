@@ -30,7 +30,7 @@ export const MoneyPage: React.FC = () => {
         color: "var(--color-text-primary)",
       }}
     >
-      <MoneyPageAppBar username={user?.username || ""} />
+      <MoneyPageAppBar username={user?.username || ""} title="Money" />
       <Container
         maxWidth="xs"
         sx={{

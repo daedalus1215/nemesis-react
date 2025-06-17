@@ -1,6 +1,6 @@
-import { BaseAppBar } from "../../../components/BaseAppBar/BaseAppBar";
+import { BaseAppBar, BaseAppBarProps } from "../../../components/BaseAppBar/BaseAppBar";
 
-const MoneyPageAppBar = (props: any) => (
+const MoneyPageAppBar = (props: BaseAppBarProps) => (
     <BaseAppBar
       {...props}
       sx={{
