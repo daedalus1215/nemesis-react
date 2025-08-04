@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import api from "../../api/axios.interceptor";
+import api from "../../../api/axios.interceptor";
 
 type TransactionWithType = {
   id: string;
@@ -19,7 +19,7 @@ const fetchTransactionsPaginated = async ({ pageParam }: { pageParam?: string })
     ...(pageParam && { cursor: pageParam }),
   });
   
-  const { data } = await api.get(`/balances/transactions/paginated?${params}`);
+  const { data } = await api.get(`/accounts/transactions/paginated?${params}`);
   return data as TransactionWithType[];
 };
 
