@@ -12,6 +12,8 @@ import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { AuthProvider } from "./auth/AuthContext";
 import { HomePage } from "./pages/HomePage/HomePage";
 import { MoneyPage } from "./pages/MoneyPage/MoneyPage";
+import { AccountPage } from "./pages/AccountPage/AccountPage";
+import { CreateAccountPage } from "./pages/CreateAccountPage/CreateAccountPage";
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -27,6 +29,8 @@ function AppRoutes() {
           <Route path="/" element={<HomePage />} /> 
           {/* <Route path="/friends" element={<FriendsPage />} /> */}
           <Route path="/money" element={<MoneyPage />} />
+          <Route path="/accounts" element={<AccountPage />} />
+          <Route path="/accounts/create" element={<CreateAccountPage />} />
         </Routes>
       </>
     );
