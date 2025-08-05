@@ -1,144 +1,203 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/useAuth';
-import api from '../../api/axios.interceptor';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../auth/useAuth";
+import { useUserProfile } from "./useUserProfile";
+import { useAccounts } from "./useAccounts";
+import { useAccountBalance } from "./useAccountBalance";
+import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import { useNavigate } from "react-router-dom";
+import styles from "./AccountPage.module.css";
+import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
+import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import api from "../../api/axios.interceptor";
 
-interface Account {
-  id: number;
-  name: string;
-  isDefault: boolean;
-  accountType: string;
-  createdAt: string;
-}
-
-export function AccountPage() {
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
+  const { userDetails, loading: profileLoading, error: profileError } = useUserProfile();
+  const { accounts, loading: accountsLoading, error: accountsError, refetch } = useAccounts();
+  const { getAccountBalance } = useAccountBalance();
+  
+  const [accountBalances, setAccountBalances] = useState<{ [key: number]: number }>({});
+  const [balancesLoading, setBalancesLoading] = useState(false);
+  
+  if (!user) {
+    return null;
+  }
 
+  // Load account balances when accounts are loaded
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
+    if (accounts.length > 0) {
+      refreshBalances();
     }
-    fetchAccounts();
-  }, [isAuthenticated, navigate]);
+  }, [accounts]); // Removed getAccountBalance dependency to avoid infinite loop
 
-  const fetchAccounts = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get('/accounts');
-      console.log('Fetched accounts:', response.data);
-      setAccounts(response.data.accounts);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
+  const handleCreateAccount = () => {
+    navigate("/accounts/create");
+  };
+
+  const handleTransferFunds = () => {
+    navigate("/accounts/transfer");
+  };
+
+  const refreshBalances = async () => {
+    if (accounts.length > 0) {
+      setBalancesLoading(true);
+      const balances: { [key: number]: number } = {};
+      for (const account of accounts) {
+        try {
+          balances[account.id] = await getAccountBalance(account.id);
+        } catch (err) {
+          console.error(`Failed to load balance for account ${account.id}:`, err);
+          balances[account.id] = 0;
+        }
+      }
+      setAccountBalances(balances);
+      setBalancesLoading(false);
     }
   };
 
   const handleSetDefault = async (accountId: number) => {
     try {
       await api.put(`/accounts/${accountId}/default`);
-      // Refresh accounts list
-      fetchAccounts();
+      // Refresh accounts list and balances
+      await refetch();
+      await refreshBalances();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to set default account');
+      console.error('Failed to set default account:', err);
     }
   };
 
-  const handleCreateAccount = () => {
-    navigate('/accounts/create');
+  const getInitials = (username: string) => {
+    return username ? username.charAt(0).toUpperCase() : "U";
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-lg">Loading accounts...</div>
-      </div>
-    );
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
+  };
+
+  if (profileLoading) {
+    return <div className={styles.loading}>Loading user details...</div>;
   }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500 text-lg">Error: {error}</div>
-      </div>
-    );
+  if (profileError) {
+    return <ErrorMessage message={`Error loading profile: ${profileError}`} />;
+  }
+
+  if (!userDetails) {
+    return null;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">My Accounts</h1>
-        <button
-          onClick={handleCreateAccount}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
-        >
-          Add Account
-        </button>
-      </div>
-
-      {accounts.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-gray-500 text-lg mb-4">
-            You don't have any accounts yet.
+    <div className={styles.accountPage}>
+      <div className={styles.header}>
+        <div className={styles.userGreeting}>
+          <div className={styles.userInfo}>
+            <div className={styles.avatar}>
+              {getInitials(userDetails.username)}
+            </div>
+            <div className={styles.greeting}>
+              Hello, {userDetails.username}
+            </div>
           </div>
-          <button
-            onClick={handleCreateAccount}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
-          >
-            Create Your First Account
+          <MenuIcon />
+        </div>
+
+        <div className={styles.pageTitle}>
+          <div className={styles.titleText}>My Accounts</div>
+          <div className={styles.subtitle}>
+            Manage your financial accounts
+          </div>
+        </div>
+
+        <div className={styles.actionButtons}>
+          <button className={styles.actionButton} onClick={handleCreateAccount}>
+            + Add Account
+          </button>
+          <button className={styles.actionButton} onClick={handleTransferFunds}>
+            Transfer Funds
           </button>
         </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {accounts.map((account) => (
-            <div
-              key={account.id}
-              className={`p-6 rounded-lg border-2 transition duration-200 ${
-                account.isDefault
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  {account.name}
-                </h3>
-                {account.isDefault && (
-                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    Default
-                  </span>
-                )}
-              </div>
-              
-              <div className="space-y-2 text-sm text-gray-600">
-                <div>
-                  <span className="font-medium">Type:</span> {account.accountType}
-                </div>
-                <div>
-                  <span className="font-medium">Created:</span>{' '}
-                  {new Date(account.createdAt).toLocaleDateString()}
-                </div>
-              </div>
+      </div>
 
-              {!account.isDefault && (
-                <div className="mt-4">
-                  <button
-                    onClick={() => handleSetDefault(account.id)}
-                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded transition duration-200"
-                  >
-                    Set as Default
-                  </button>
+      <div className={styles.content}>
+        <div className={styles.accountsSection}>
+          {accountsLoading ? (
+            <div className={styles.loading}>Loading accounts...</div>
+          ) : accountsError ? (
+            <ErrorMessage message={`Error loading accounts: ${accountsError}`} />
+          ) : accounts && accounts.length > 0 ? (
+            <div className={styles.accountsGrid}>
+              {accounts.map((account) => (
+                <div 
+                  key={account.id} 
+                  className={`${styles.accountCard} ${
+                    account.isDefault ? styles.defaultAccount : ''
+                  }`}
+                >
+                  <div className={styles.accountHeader}>
+                    <h3 className={styles.accountName}>{account.name}</h3>
+                    {account.isDefault && (
+                      <span className={styles.defaultBadge}>Default</span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.accountDetails}>
+                    <div className={styles.accountDetail}>
+                      <span className={styles.detailLabel}>Type:</span>
+                      <span className={styles.detailValue}>{account.accountType}</span>
+                    </div>
+                    <div className={styles.accountDetail}>
+                      <span className={styles.detailLabel}>Balance:</span>
+                      <span className={`${styles.detailValue} ${styles.balance}`}>
+                        {balancesLoading ? (
+                          "Loading..."
+                        ) : accountBalances[account.id] !== undefined ? (
+                          formatCurrency(accountBalances[account.id])
+                        ) : (
+                          "Error"
+                        )}
+                      </span>
+                    </div>
+                    <div className={styles.accountDetail}>
+                      <span className={styles.detailLabel}>Created:</span>
+                      <span className={styles.detailValue}>
+                        {new Date(account.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {!account.isDefault && (
+                    <button
+                      onClick={() => handleSetDefault(account.id)}
+                      className={styles.setDefaultButton}
+                    >
+                      Set as Default
+                    </button>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
-          ))}
+          ) : (
+            <div className={styles.noAccounts}>
+              <div className={styles.noAccountsTitle}>No accounts yet</div>
+              <div className={styles.noAccountsMessage}>
+                You don't have any accounts yet. Create your first account to get started with managing your finances.
+              </div>
+              <button 
+                className={styles.createAccountButton}
+                onClick={handleCreateAccount}
+              >
+                Create Your First Account
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
+
+      <BottomNavigation selected="Accounts" />
     </div>
   );
-}
+};
