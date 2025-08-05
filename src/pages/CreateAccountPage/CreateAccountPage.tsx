@@ -1,7 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/useAuth';
-import api from '../../api/axios.interceptor';
+import React, { useState } from "react";
+import { useAuth } from "../../auth/useAuth";
+import { useUserProfile } from "./useUserProfile";
+import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import { useNavigate } from "react-router-dom";
+import styles from "./CreateAccountPage.module.css";
+import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
+import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import api from "../../api/axios.interceptor";
 
 const ACCOUNT_TYPES = [
   { value: 'ASSET', label: 'Asset Account' },
@@ -11,15 +16,25 @@ const ACCOUNT_TYPES = [
   { value: 'EXPENSE', label: 'Expense Account' },
 ];
 
-export function CreateAccountPage() {
+export const CreateAccountPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { userDetails, loading: profileLoading, error: profileError } = useUserProfile();
+  
   const [formData, setFormData] = useState({
     name: '',
     accountType: 'ASSET',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  
+  if (!user) {
+    return null;
+  }
+
+  const getInitials = (username: string) => {
+    return username ? username.charAt(0).toUpperCase() : "U";
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -32,11 +47,6 @@ export function CreateAccountPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-
     if (!formData.name.trim()) {
       setError('Account name is required');
       return;
@@ -64,75 +74,112 @@ export function CreateAccountPage() {
     navigate('/accounts');
   };
 
+  if (profileLoading) {
+    return <div className={styles.loading}>Loading user details...</div>;
+  }
+
+  if (profileError) {
+    return <ErrorMessage message={`Error loading profile: ${profileError}`} />;
+  }
+
+  if (!userDetails) {
+    return null;
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Create New Account</h1>
-        
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+    <div className={styles.createAccountPage}>
+      <div className={styles.header}>
+        <div className={styles.userGreeting}>
+          <div className={styles.userInfo}>
+            <div className={styles.avatar}>
+              {getInitials(userDetails.username)}
+            </div>
+            <div className={styles.greeting}>
+              Hello, {userDetails.username}
+            </div>
           </div>
-        )}
+          <MenuIcon />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Account Name *
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter account name"
-              maxLength={50}
-              required
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Maximum 50 characters
-            </p>
+        <div className={styles.pageTitle}>
+          <div className={styles.titleText}>Create Account</div>
+          <div className={styles.subtitle}>
+            Add a new financial account
           </div>
-
-          <div>
-            <label htmlFor="accountType" className="block text-sm font-medium text-gray-700 mb-1">
-              Account Type
-            </label>
-            <select
-              id="accountType"
-              name="accountType"
-              value={formData.accountType}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            >
-              {ACCOUNT_TYPES.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex space-x-3 pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
-            >
-              {loading ? 'Creating...' : 'Create Account'}
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-4 rounded-lg transition duration-200"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
+
+      <div className={styles.content}>
+        <div className={styles.formContainer}>
+          <div className={styles.formCard}>
+            {error && (
+              <div className={styles.errorMessage}>
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.formGroup}>
+                <label htmlFor="name" className={styles.label}>
+                  Account Name <span className={styles.required}>*</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="Enter account name"
+                  maxLength={50}
+                  required
+                />
+                <p className={styles.helperText}>
+                  Maximum 50 characters
+                </p>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="accountType" className={styles.label}>
+                  Account Type
+                </label>
+                <select
+                  id="accountType"
+                  name="accountType"
+                  value={formData.accountType}
+                  onChange={handleInputChange}
+                  className={styles.select}
+                >
+                  {ACCOUNT_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.buttonGroup}>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={styles.submitButton}
+                >
+                  {loading ? 'Creating...' : 'Create Account'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className={styles.cancelButton}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <BottomNavigation selected="Accounts" />
     </div>
   );
-}
+};
