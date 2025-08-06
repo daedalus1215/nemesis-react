@@ -26,9 +26,7 @@ function AppRoutes() {
         {/* <header>
         <Navbar />
       </header> */}
-          {/* <Route path="/" element={<HomePage />} /> */}
           <Route path="/" element={<HomePage />} /> 
-          {/* <Route path="/friends" element={<FriendsPage />} /> */}
           <Route path="/money" element={<MoneyPage />} />
           <Route path="/accounts" element={<AccountPage />} />
           <Route path="/accounts/create" element={<CreateAccountPage />} />

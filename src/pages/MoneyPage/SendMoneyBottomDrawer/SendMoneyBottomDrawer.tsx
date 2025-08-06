@@ -49,7 +49,7 @@ export const SendMoneyBottomDrawer: React.FC<SendMoneyBottomDrawerProps> = ({
       return;
     }
     try {
-      await api.post('/balances/transfer', {
+      await api.post('/accounts/transfer', {
         toUserId: data.to.id,
         amount: Number(amount),
         description: data.note,
