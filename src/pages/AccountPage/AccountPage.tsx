@@ -39,6 +39,10 @@ export const AccountPage: React.FC = () => {
     navigate("/accounts/transfer");
   };
 
+  const handleSendMoney = () => {
+    navigate("/money");
+  };
+
   const refreshBalances = async () => {
     if (accounts.length > 0) {
       setBalancesLoading(true);
@@ -118,6 +122,9 @@ export const AccountPage: React.FC = () => {
           </button>
           <button className={styles.actionButton} onClick={handleTransferFunds}>
             Transfer Funds
+          </button>
+          <button className={styles.actionButton} onClick={handleSendMoney}>
+            Send Money
           </button>
         </div>
       </div>
