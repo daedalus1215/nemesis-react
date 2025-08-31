@@ -113,7 +113,8 @@
   gap: 8px;
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px var(--color-shadow);
-  min-height: 48px; /* Minimum touch target */
+  min-height: 48px;
+  /* Minimum touch target */
 }
 
 @media (max-width: 480px) {
@@ -133,7 +134,8 @@
 
 .content {
   flex: 1;
-  padding: 20px 20px 90px 20px; /* Bottom padding for navigation */
+  padding: 20px 20px 90px 20px;
+  /* Bottom padding for navigation */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -270,7 +272,8 @@
   font-size: 13px;
 }
 
-.addAccountButton, .createAccountButton {
+.addAccountButton,
+.createAccountButton {
   width: 100%;
   background-color: var(--color-primary);
   color: white;
@@ -283,7 +286,8 @@
   margin-top: 12px;
 }
 
-.addAccountButton:hover, .createAccountButton:hover {
+.addAccountButton:hover,
+.createAccountButton:hover {
   background-color: var(--color-primary-dark);
 }
 
