@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { useTransactionsPaginated } from "./useTransactionsPaginated";
-import styles from "../HomePage.module.css";
 import { TransactionStatus, TransactionType } from "../../../constant";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
+import styles from "../HomePage.module.css";
 
 type TransactionWithType = {
   id: string;

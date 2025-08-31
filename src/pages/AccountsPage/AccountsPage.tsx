@@ -1,5 +1,4 @@
 import React from "react";
-import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
 import { useAccounts } from "./useAccounts";
 import { useAccountBalances } from "./useAccountBalances";
@@ -12,17 +11,22 @@ import styles from "./AccountsPage.module.css";
 
 export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { userDetails, loading: profileLoading, error: profileError } = useUserProfile();
-  const { accounts, loading: accountsLoading, error: accountsError, refetch } = useAccounts();
-  
-  // Extract account IDs for the balances query
-  const accountIds = accounts.map(account => account.id);
-  const { data: accountBalances, isLoading: balancesLoading } = useAccountBalances(accountIds);
+  const {
+    userDetails,
+    loading: profileLoading,
+    error: profileError,
+  } = useUserProfile();
+  const {
+    accounts,
+    loading: accountsLoading,
+    error: accountsError,
+    refetch,
+  } = useAccounts();
 
-  if (!user) {
-    return null;
-  }
+  // Extract account IDs for the balances query
+  const accountIds = accounts.map((account) => account.id);
+  const { data: accountBalances, isLoading: balancesLoading } =
+    useAccountBalances(accountIds);
 
   const handleCreateAccount = () => {
     navigate("/accounts/create");
@@ -42,18 +46,18 @@ export const AccountPage: React.FC = () => {
       // Refresh accounts list - balances will automatically refetch
       await refetch();
     } catch (err) {
-      console.error('Failed to set default account:', err);
+      console.error("Failed to set default account:", err);
     }
   };
 
-  const getInitials = (username: string) => {
-    return username ? username.charAt(0).toUpperCase() : "U";
+  const handleBack = () => {
+    navigate("/");
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
     }).format(amount);
   };
 
@@ -70,25 +74,18 @@ export const AccountPage: React.FC = () => {
   }
 
   return (
-    <div className={styles.accountPage}>
+    <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.userGreeting}>
-          <div className={styles.userInfo}>
-            <div className={styles.avatar}>
-              {getInitials(userDetails.username)}
-            </div>
-            <div className={styles.greeting}>
-              Hello, {userDetails.username}
-            </div>
-          </div>
+        <div className={styles.navigation}>
+          <button className={styles.backButton} onClick={handleBack}>
+            ← Back
+          </button>
           <MenuIcon />
         </div>
 
         <div className={styles.pageTitle}>
           <div className={styles.titleText}>My Accounts</div>
-          <div className={styles.subtitle}>
-            Manage your financial accounts
-          </div>
+          <div className={styles.subtitle}>Manage your financial accounts</div>
         </div>
 
         <div className={styles.actionButtons}>
@@ -109,15 +106,19 @@ export const AccountPage: React.FC = () => {
           {accountsLoading ? (
             <div className={styles.loading}>Loading accounts...</div>
           ) : accountsError ? (
-            <ErrorMessage message={`Error loading accounts: ${accountsError}`} />
+            <ErrorMessage
+              message={`Error loading accounts: ${accountsError}`}
+            />
           ) : accounts && accounts.length > 0 ? (
             <div className={styles.accountsGrid}>
               {accounts.map((account) => (
-                <div 
-                  key={account.id} 
+                <div
+                  key={account.id}
                   className={`${styles.accountCard} ${
-                    account.isDefault ? styles.defaultAccount : ''
+                    account.isDefault ? styles.defaultAccount : ""
                   }`}
+                  onClick={() => navigate(`/accounts/detail/${account.id}`)}
+                  style={{ cursor: "pointer" }}
                 >
                   <div className={styles.accountHeader}>
                     <h3 className={styles.accountName}>{account.name}</h3>
@@ -125,22 +126,24 @@ export const AccountPage: React.FC = () => {
                       <span className={styles.defaultBadge}>Default</span>
                     )}
                   </div>
-                  
+
                   <div className={styles.accountDetails}>
                     <div className={styles.accountDetail}>
                       <span className={styles.detailLabel}>Type:</span>
-                      <span className={styles.detailValue}>{account.accountType}</span>
+                      <span className={styles.detailValue}>
+                        {account.accountType}
+                      </span>
                     </div>
                     <div className={styles.accountDetail}>
                       <span className={styles.detailLabel}>Balance:</span>
-                      <span className={`${styles.detailValue} ${styles.balance}`}>
-                        {balancesLoading ? (
-                          "Loading..."
-                        ) : accountBalances?.[account.id] !== undefined ? (
-                          formatCurrency(accountBalances[account.id])
-                        ) : (
-                          "Error"
-                        )}
+                      <span
+                        className={`${styles.detailValue} ${styles.balance}`}
+                      >
+                        {balancesLoading
+                          ? "Loading..."
+                          : accountBalances?.[account.id] !== undefined
+                          ? formatCurrency(accountBalances[account.id])
+                          : "Error"}
                       </span>
                     </div>
                     <div className={styles.accountDetail}>
@@ -166,9 +169,10 @@ export const AccountPage: React.FC = () => {
             <div className={styles.noAccounts}>
               <div className={styles.noAccountsTitle}>No accounts yet</div>
               <div className={styles.noAccountsMessage}>
-                You don't have any accounts yet. Create your first account to get started with managing your finances.
+                You don't have any accounts yet. Create your first account to
+                get started with managing your finances.
               </div>
-              <button 
+              <button
                 className={styles.createAccountButton}
                 onClick={handleCreateAccount}
               >

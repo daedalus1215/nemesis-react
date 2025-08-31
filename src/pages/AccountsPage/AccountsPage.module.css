@@ -1,4 +1,4 @@
-.accountPage {
+.page {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -21,35 +21,29 @@
   }
 }
 
-.userGreeting {
+.navigation {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
-.userInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 18px;
-  color: var(--color-text-primary);
-}
-
-.greeting {
-  font-size: 18px;
+.backButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .pageTitle {
@@ -176,6 +170,8 @@
 .accountCard:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px var(--color-shadow);
+  border-color: var(--color-primary);
+  cursor: pointer;
 }
 
 .accountCard.defaultAccount {

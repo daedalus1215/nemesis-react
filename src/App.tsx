@@ -15,6 +15,7 @@ import { MoneyPage } from "./pages/MoneyPage/MoneyPage";
 import { AccountPage } from "./pages/AccountsPage/AccountsPage";
 import { CreateAccountPage } from "./pages/CreateAccountPage/CreateAccountPage";
 import { AccountTransferPage } from "./pages/AccountTransferPage/AccountTransferPage";
+import { AccountDetailPage } from "./pages/AccountDetailPage/AccountDetailPage";
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -29,6 +30,7 @@ function AppRoutes() {
           <Route path="/" element={<HomePage />} /> 
           <Route path="/money" element={<MoneyPage />} />
           <Route path="/accounts" element={<AccountPage />} />
+          <Route path="/accounts/detail/:accountId" element={<AccountDetailPage  />} />
           <Route path="/accounts/create" element={<CreateAccountPage />} />
           <Route path="/accounts/transfer" element={<AccountTransferPage />} />
         </Routes>
