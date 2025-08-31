@@ -12,7 +12,7 @@ import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { AuthProvider } from "./auth/AuthContext";
 import { HomePage } from "./pages/HomePage/HomePage";
 import { MoneyPage } from "./pages/MoneyPage/MoneyPage";
-import { AccountPage } from "./pages/AccountPage/AccountPage";
+import { AccountPage } from "./pages/AccountsPage/AccountsPage";
 import { CreateAccountPage } from "./pages/CreateAccountPage/CreateAccountPage";
 import { AccountTransferPage } from "./pages/AccountTransferPage/AccountTransferPage";
 

@@ -1,35 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
 import { useAccounts } from "./useAccounts";
-import { useAccountBalance } from "./useAccountBalance";
+import { useAccountBalances } from "./useAccountBalances";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { useNavigate } from "react-router-dom";
-import styles from "./AccountPage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
 import api from "../../api/axios.interceptor";
+import styles from "./AccountsPage.module.css";
 
 export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { userDetails, loading: profileLoading, error: profileError } = useUserProfile();
   const { accounts, loading: accountsLoading, error: accountsError, refetch } = useAccounts();
-  const { getAccountBalance } = useAccountBalance();
   
-  const [accountBalances, setAccountBalances] = useState<{ [key: number]: number }>({});
-  const [balancesLoading, setBalancesLoading] = useState(false);
-  
+  // Extract account IDs for the balances query
+  const accountIds = accounts.map(account => account.id);
+  const { data: accountBalances, isLoading: balancesLoading } = useAccountBalances(accountIds);
+
   if (!user) {
     return null;
   }
-
-  // Load account balances when accounts are loaded
-  useEffect(() => {
-    if (accounts.length > 0) {
-      refreshBalances();
-    }
-  }, [accounts]); // Removed getAccountBalance dependency to avoid infinite loop
 
   const handleCreateAccount = () => {
     navigate("/accounts/create");
@@ -43,29 +36,11 @@ export const AccountPage: React.FC = () => {
     navigate("/money");
   };
 
-  const refreshBalances = async () => {
-    if (accounts.length > 0) {
-      setBalancesLoading(true);
-      const balances: { [key: number]: number } = {};
-      for (const account of accounts) {
-        try {
-          balances[account.id] = await getAccountBalance(account.id);
-        } catch (err) {
-          console.error(`Failed to load balance for account ${account.id}:`, err);
-          balances[account.id] = 0;
-        }
-      }
-      setAccountBalances(balances);
-      setBalancesLoading(false);
-    }
-  };
-
   const handleSetDefault = async (accountId: number) => {
     try {
       await api.put(`/accounts/${accountId}/default`);
-      // Refresh accounts list and balances
+      // Refresh accounts list - balances will automatically refetch
       await refetch();
-      await refreshBalances();
     } catch (err) {
       console.error('Failed to set default account:', err);
     }
@@ -161,7 +136,7 @@ export const AccountPage: React.FC = () => {
                       <span className={`${styles.detailValue} ${styles.balance}`}>
                         {balancesLoading ? (
                           "Loading..."
-                        ) : accountBalances[account.id] !== undefined ? (
+                        ) : accountBalances?.[account.id] !== undefined ? (
                           formatCurrency(accountBalances[account.id])
                         ) : (
                           "Error"
