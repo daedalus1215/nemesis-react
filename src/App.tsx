@@ -10,6 +10,7 @@ import { useAuth } from "./auth/useAuth";
 import { LandingPage } from "./pages/LandingPage/LandingPage";
 import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { AuthProvider } from "./auth/AuthContext";
+import { ScrollProvider } from "./context/ScrollContext";
 import { HomePage } from "./pages/HomePage/HomePage";
 import { MoneyPage } from "./pages/MoneyPage/MoneyPage";
 import { AccountPage } from "./pages/AccountsPage/AccountsPage";
@@ -24,9 +25,6 @@ function AppRoutes() {
     return (
       <>
         <Routes>
-        {/* <header>
-        <Navbar />
-      </header> */}
           <Route path="/" element={<HomePage />} /> 
           <Route path="/money" element={<MoneyPage />} />
           <Route path="/accounts" element={<AccountPage />} />
@@ -40,9 +38,6 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* <header>
-        <Navbar />
-      </header> */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
@@ -54,10 +49,12 @@ function AppRoutes() {
 
 export function App() {
   return (
-    <AuthProvider >
-      <Router>
-        <AppRoutes />
-      </Router>
+    <AuthProvider>
+      <ScrollProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </ScrollProvider>
     </AuthProvider>
   );
 }

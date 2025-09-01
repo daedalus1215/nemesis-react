@@ -4,6 +4,7 @@ import {
   BottomNavigationAction,
   BottomNavigation as MuiBottomNavigation,
 } from "@mui/material";
+import { useScroll } from "../../context/ScrollContext";
 import styles from "./BottomNavigation.module.css";
 
 const labels = {
@@ -14,6 +15,10 @@ const labels = {
 
 export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({selected}) => {
   const [value, setValue] = React.useState(selected);
+  const { isVisible, direction, hasScrolled } = useScroll();
+    
+  console.log('BottomNavigation rendering with:', { isVisible, direction, hasScrolled });
+  
   return (
     <MuiBottomNavigation
       showLabels
@@ -21,7 +26,7 @@ export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({sel
       onChange={(_, newValue) => {
         setValue(newValue);
       }}
-      className={styles.bottomNavigation}
+      className={`${styles.bottomNavigation} ${direction=== "down" ? styles.hidden : styles.visible}`}
     >
       <BottomNavigationAction value="Home" label={labels.Home} icon={<AccountBalance />} href="/" />
       <BottomNavigationAction value="Send" label={labels.Send} icon={<AttachMoney />} href="/money" />

@@ -32,7 +32,6 @@
     scrollbar-width: none;
 }
 
-
 .transactionItem {
     background: var(--color-surface);
     border-radius: 12px;
@@ -41,6 +40,10 @@
     border: 2px solid var(--color-border);
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.transactionItem:last-child {
+    margin-bottom: 100px;
 }
 
 .transactionItem:hover {

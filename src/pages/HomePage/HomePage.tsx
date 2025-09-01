@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
 import { useUserBalance } from "./useUserBalance";
 import { useUserAccounts } from "./useUserAccounts";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import { useScroll } from "../../context/ScrollContext";
 import { useNavigate } from "react-router-dom";
 import styles from "./HomePage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
@@ -13,9 +14,49 @@ import { TransferIcon } from "../../components/icons/TransferIcon";
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isVisible, direction, hasScrolled, scrollY } = useScroll();
   const { data: userDetails, isLoading: profileLoading, error: profileError } = useUserProfile();
   const { data: balance, isLoading: balanceLoading, error: balanceError } = useUserBalance();
   const { data: accounts, isLoading: accountsLoading, error: accountsError } = useUserAccounts();
+
+  // Debug scroll position
+  useEffect(() => {
+    const updateScrollPosition = () => {
+      const scrollDebug = document.getElementById('scroll-debug');
+      if (scrollDebug) {
+        scrollDebug.textContent = window.scrollY.toString();
+      }
+    };
+
+    // Test basic scroll event capture
+    const testScroll = () => {
+      console.log('🎯 BASIC SCROLL EVENT CAPTURED!', window.scrollY);
+    };
+
+    // Test document scroll events
+    const testDocumentScroll = () => {
+      console.log('📜 DOCUMENT SCROLL EVENT!', window.scrollY);
+    };
+
+    window.addEventListener('scroll', updateScrollPosition);
+    window.addEventListener('scroll', testScroll);
+    document.addEventListener('scroll', testDocumentScroll);
+    updateScrollPosition(); // Initial call
+    
+    console.log('🔍 Scroll event listeners added to HomePage');
+    console.log('📏 Page dimensions:', {
+      windowHeight: window.innerHeight,
+      documentHeight: document.body.scrollHeight,
+      isScrollable: document.body.scrollHeight > window.innerHeight,
+      currentScrollY: window.scrollY
+    });
+
+    return () => {
+      window.removeEventListener('scroll', updateScrollPosition);
+      window.removeEventListener('scroll', testScroll);
+      document.removeEventListener('scroll', testDocumentScroll);
+    };
+  }, []);
   
   if (!user) {
     return null;
@@ -60,6 +101,47 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className={styles.homePage}>
+      {/* Scroll position debug display */}
+      <div style={{ 
+        position: 'fixed', 
+        top: '70px', 
+        right: '20px', 
+        background: 'rgba(0,0,0,0.8)', 
+        color: 'white', 
+        padding: '10px', 
+        borderRadius: '5px',
+        zIndex: 999,
+        fontFamily: 'monospace'
+      }}>
+        Scroll Y: <span id="scroll-debug">0</span>
+        <br />
+        <button 
+          onClick={() => {
+            console.log('🧪 Manual scroll test clicked');
+            window.scrollTo(0, 500);
+            setTimeout(() => window.scrollTo(0, 0), 1000);
+          }}
+          style={{ 
+            marginTop: '5px', 
+            padding: '5px', 
+            background: '#00ff00', 
+            color: 'black', 
+            border: 'none', 
+            borderRadius: '3px',
+            cursor: 'pointer'
+          }}
+        >
+          Test Scroll
+        </button>
+        <br />
+        <div style={{ marginTop: '10px', fontSize: '12px' }}>
+          <div>Context isVisible: {isVisible ? '✅' : '❌'}</div>
+          <div>Context direction: {direction}</div>
+          <div>Context hasScrolled: {hasScrolled ? '✅' : '❌'}</div>
+          <div>Context scrollY: {scrollY}</div>
+        </div>
+      </div>
+
       <div className={styles.header}>
         <div className={styles.userGreeting}>
           <div className={styles.userInfo}>
@@ -140,6 +222,30 @@ export const HomePage: React.FC = () => {
               </button>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Force scrolling with a very tall element */}
+      <div style={{ 
+        height: '3000px', 
+        background: 'linear-gradient(45deg, #ff0000, #00ff00, #0000ff)', 
+        margin: '20px', 
+        borderRadius: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ 
+          padding: '40px', 
+          color: 'white', 
+          textAlign: 'center',
+          background: 'rgba(0,0,0,0.7)',
+          borderRadius: '20px'
+        }}>
+          <h2>SCROLL TEST AREA</h2>
+          <p>This element is 3000px tall to force scrolling.</p>
+          <p>Scroll down to see the navbar hide!</p>
+          <p>Scroll up to see the navbar appear!</p>
         </div>
       </div>
 
