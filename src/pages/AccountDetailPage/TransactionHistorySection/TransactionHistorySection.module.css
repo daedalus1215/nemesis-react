@@ -27,7 +27,7 @@
     border: 2px solid var(--color-border);
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px var(--color-shadow);
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     height: calc(100vh - 650px);
     scrollbar-width: none;
 }
