@@ -26,7 +26,7 @@ export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({sel
       onChange={(_, newValue) => {
         setValue(newValue);
       }}
-      className={`${styles.bottomNavigation} ${direction=== "down" ? styles.hidden : styles.visible}`}
+      className={`${styles.bottomNavigation} ${isVisible ? styles.visible : styles.hidden}`}
     >
       <BottomNavigationAction value="Home" label={labels.Home} icon={<AccountBalance />} href="/" />
       <BottomNavigationAction value="Send" label={labels.Send} icon={<AttachMoney />} href="/money" />

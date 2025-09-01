@@ -41,7 +41,28 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({
         console.log('📜 User has started scrolling');
       }
       
-      // Determine scroll direction with immediate response
+      // Check if we're near the bottom of the page
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.body.scrollHeight;
+      const scrollPosition = currentScrollY + windowHeight;
+      const distanceFromBottom = documentHeight - scrollPosition;
+      
+      console.log(`📏 Scroll position: ${currentScrollY}, Distance from bottom: ${distanceFromBottom}`);
+      
+      // Hide navigation when near bottom (within 100px), show when not
+      if (distanceFromBottom < 100) {
+        if (isVisible) {
+          console.log('🙈 Near bottom of page, hiding navigation');
+          setIsVisible(false);
+        }
+      } else {
+        if (!isVisible) {
+          console.log('👁️ Not near bottom, showing navigation');
+          setIsVisible(true);
+        }
+      }
+
+      // Determine scroll direction for other uses
       if (Math.abs(currentScrollY - scrollY) < threshold) {
         return; // Ignore tiny scroll movements
       }
@@ -52,15 +73,6 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({
       console.log(`📜 Scroll: ${newDirection}, Y: ${currentScrollY}, lastY: ${scrollY}, diff: ${currentScrollY - scrollY}`);
       
       setDirection(newDirection);
-
-      // Immediate visibility change for better responsiveness
-      if (newDirection === "down" && currentScrollY > 20) {
-        console.log('🙈 Hiding navigation (scrolling down)');
-        setIsVisible(false);
-      } else if (newDirection === "up") {
-        console.log('👁️ Showing navigation (scrolling up)');
-        setIsVisible(true);
-      }
 
       // Only use debounce for edge cases
       clearTimeout(timeoutId);
@@ -87,7 +99,7 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({
       window.removeEventListener("scroll", handleScrollToTop);
       clearTimeout(timeoutId);
     };
-  }, [scrollY, threshold, debounceMs, hasScrolled]);
+  }, [scrollY, threshold, debounceMs, hasScrolled, isVisible]);
 
   const value: ScrollContextType = {
     isVisible,
