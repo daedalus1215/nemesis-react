@@ -38,9 +38,9 @@ export const useAccountTransactions = (
     error,
     refetch,
   } = useQuery({
-    queryKey: ['accountTransactions', accountId, limit, offset],
+    queryKey: ['accountPayments', accountId, limit, offset],
     queryFn: async () => {
-      const response = await api.get(`/accounts/${accountId}/transactions`, {
+      const response = await api.get(`/accounts/${accountId}/payments`, {
         params: { limit, offset }
       });
       

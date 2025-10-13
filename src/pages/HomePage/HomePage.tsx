@@ -16,7 +16,7 @@ export const HomePage: React.FC = () => {
   const { data: userDetails, isLoading: profileLoading, error: profileError } = useUserProfile();
   const { data: balance, isLoading: balanceLoading, error: balanceError } = useUserBalance();
   const { data: accounts, isLoading: accountsLoading, error: accountsError } = useUserAccounts();
-  
+
   if (!user) {
     return null;
   }
@@ -76,10 +76,10 @@ export const HomePage: React.FC = () => {
         <div className={styles.balanceSection}>
           <div className={styles.balanceLabel}>Total Balance</div>
           <div className={styles.balanceAmount}>
-            {balanceLoading ? 
-              "Loading..." : 
-              balanceError ? 
-                "Error" : 
+            {balanceLoading ?
+              "Loading..." :
+              balanceError ?
+                "Error" :
                 formatCurrency(balance || 0)
             }
           </div>
@@ -99,7 +99,7 @@ export const HomePage: React.FC = () => {
       <div className={styles.content}>
         <div className={styles.accountsSection}>
           <h3 className={styles.sectionTitle}>My Accounts</h3>
-          
+
           {accountsLoading ? (
             <div className={styles.accountsLoading}>Loading accounts...</div>
           ) : accountsError ? (
@@ -122,7 +122,7 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
               ))}
-              <button 
+              <button
                 className={styles.addAccountButton}
                 onClick={() => navigate('/accounts')}
               >
@@ -132,7 +132,7 @@ export const HomePage: React.FC = () => {
           ) : (
             <div className={styles.noAccounts}>
               <p>No accounts found</p>
-              <button 
+              <button
                 className={styles.createAccountButton}
                 onClick={() => navigate('/accounts/create')}
               >
