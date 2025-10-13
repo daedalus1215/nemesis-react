@@ -1,15 +1,15 @@
-export const TransactionStatus = {
+export const PaymentStatus = {
     PENDING: 'PENDING',
     COMPLETED: 'COMPLETED',
     FAILED: 'FAILED',
     CANCELLED: 'CANCELLED',
 } as const;
 
-export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];
+export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
 
-export const TransactionType = {
+export const PaymentType = {
     INCOMING: 'INCOMING',
     OUTGOING: 'OUTGOING',
 } as const;
 
-export type TransactionType = typeof TransactionType[keyof typeof TransactionType];
+export type PaymentType = typeof PaymentType[keyof typeof PaymentType];
