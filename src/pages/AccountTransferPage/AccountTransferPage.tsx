@@ -176,17 +176,6 @@ export const AccountTransferPage: React.FC = () => {
     return (
       <div className={styles.accountTransferPage}>
         <div className={styles.header}>
-          <div className={styles.userGreeting}>
-            <div className={styles.userInfo}>
-              <div className={styles.avatar}>
-                {getInitials(userDetails.username)}
-              </div>
-              <div className={styles.greeting}>
-                Hello, {userDetails.username}
-              </div>
-            </div>
-            <MenuIcon />
-          </div>
 
           <div className={styles.pageTitle}>
             <div className={styles.titleText}>Account Transfer</div>
@@ -230,7 +219,6 @@ export const AccountTransferPage: React.FC = () => {
               Hello, {userDetails.username}
             </div>
           </div>
-          <MenuIcon />
         </div>
 
         <div className={styles.pageTitle}>
@@ -387,7 +375,7 @@ export const AccountTransferPage: React.FC = () => {
         </div>
       </div>
 
-      <BottomNavigation selected="Accounts" />
+      <BottomNavigation selected="Transfer" />
     </div>
   );
 };

@@ -4,14 +4,12 @@ import { useAccountDetail } from "../../hooks/useAccountDetail";
 import { useAccountBalance } from "../../hooks/useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
 import api from "../../api/axios.interceptor";
 import styles from "./AccountDetailPage.module.css";
 import { TransactionHistorySection } from "./TransactionHistorySection/TransactionHistorySection";
 
 export const AccountDetailPage: React.FC = () => {
   const { accountId: id } = useParams<{ accountId: string }>();
-  console.log(id);
   const navigate = useNavigate();
   const accountId = parseInt(id || "0");
 
@@ -78,26 +76,12 @@ export const AccountDetailPage: React.FC = () => {
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
           </button>
-          <MenuIcon />
         </div>
-
-        <div className={styles.accountInfo}>
-          <div className={styles.accountName}>{account.name}</div>
-          <div className={styles.accountType}>{account.accountType}</div>
-          {account.isDefault && (
+        <div className={styles.pageTitle}>
+          <div className={styles.titleText}>{account.name}</div>
+          <div className={styles.subtitle}>{account.accountType} -  {account.isDefault && (
             <span className={styles.defaultBadge}>Default Account</span>
-          )}
-        </div>
-
-        <div className={styles.balanceSection}>
-          <div className={styles.balanceLabel}>Current Balance</div>
-          <div className={styles.balanceAmount}>
-            {balanceLoading
-              ? "Loading..."
-              : balanceError
-              ? "Error"
-              : formatCurrency(balance || 0)}
-          </div>
+          )}</div>         
         </div>
 
         <div className={styles.actionButtons}>
