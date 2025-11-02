@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Grid, Button } from '@mui/material';
-import BackspaceIcon from '@mui/icons-material/Backspace';
+import styles from "./MoneyDialPad.module.css";
 
 type MoneyDialPadProps = {
   amount: string;
@@ -27,39 +26,38 @@ const MoneyDialPad: React.FC<MoneyDialPadProps> = ({ amount, setAmount }) => {
   };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 320, mb: 2 }}>
+    <div className={styles.dialPad}>
       {numberPadKeys.map((row, rowIdx) => (
-        <Grid
-          container
-          spacing={1}
-          key={rowIdx}
-          justifyContent="center"
-          sx={{ mb: rowIdx < numberPadKeys.length - 1 ? 1 : 0 }}
-        >
+        <div key={rowIdx} className={styles.row}>
           {row.map((key, colIdx) => (
-            // @ts-expect-error MUI Grid type resolution issue
-            <Grid item xs={4} key={key + colIdx}>
-              <Button
-                variant="contained"
-                onClick={() => handleKeyPress(key)}
-                sx={{
-                  width: "100%",
-                  height: 60,
-                  fontSize: "2rem",
-                  background: "var(--color-surface)",
-                  color: "var(--color-text-primary)",
-                  borderRadius: 2,
-                  boxShadow: "none",
-                  "&:hover": { background: "var(--color-primary-dark)" },
-                }}
-              >
-                {key === "⌫" ? <BackspaceIcon fontSize="large" /> : key}
-              </Button>
-            </Grid>
+            <button
+              key={key + colIdx}
+              type="button"
+              className={styles.button}
+              onClick={() => handleKeyPress(key)}
+            >
+              {key === "⌫" ? (
+                <svg
+                  className={styles.backspaceIcon}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                  <line x1="18" y1="9" x2="12" y2="15" />
+                  <line x1="12" y1="9" x2="18" y2="15" />
+                </svg>
+              ) : (
+                key
+              )}
+            </button>
           ))}
-        </Grid>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 };
 

@@ -1,95 +1,238 @@
 import React, { useState } from "react";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import { useAuth } from "../../auth/useAuth";
-import { SendMoneyBottomDrawer } from "./SendMoneyBottomDrawer/SendMoneyBottomDrawer";
-import { MoneyDialPad } from "./components/MoneyDialPad.tsx";
-import MoneyPageAppBar from "./components/MoneyPageAppBar.tsx";
-import { useBottomDrawer } from "../../components/BottomDrawer/useBottomDrawer";
+import { useNavigate } from "react-router-dom";
+import { MoneyDialPad } from "./components/MoneyDialPad";
+import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { useUsers } from "./useUsers";
+import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
+import api from "../../api/axios.interceptor";
+import styles from "./MoneyPage.module.css";
 
 const getDisplayAmount = (amount: string) => {
-  if (!amount || amount === ".") return "$0";
-  return `$${amount}`;
+  if (!amount || amount === ".") return "$0.00";
+  const numAmount = parseFloat(amount);
+  if (isNaN(numAmount)) return "$0.00";
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(numAmount);
+};
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
 };
 
 export const MoneyPage: React.FC = () => {
   const [amount, setAmount] = useState("");
   const { user } = useAuth();
-  const { open, handleOpen, handleClose } = useBottomDrawer();
+  const navigate = useNavigate();
+  const { users, loading: usersLoading, error: usersError } = useUsers();
+  
+  const [formData, setFormData] = useState({
+    toUserId: '',
+    note: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  if (!user) {
+    return null;
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear messages when user starts typing
+    if (error) setError(null);
+    if (success) setSuccess(null);
+  };
+
+  const validateForm = (): string | null => {
+    if (!formData.toUserId) {
+      return 'Please select a recipient';
+    }
+    if (!amount || parseFloat(amount) <= 0) {
+      return 'Please enter a valid amount';
+    }
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      setSuccess(null);
+
+      const response = await api.post('/accounts/transfer', {
+        toUserId: parseInt(formData.toUserId),
+        amount: parseFloat(amount),
+        description: formData.note.trim() || undefined,
+      });
+
+      if (response.data.success) {
+        setSuccess(`Payment sent successfully! Transaction ID: ${response.data.transactionId || 'N/A'}`);
+        // Reset form
+        setAmount("");
+        setFormData({
+          toUserId: '',
+          note: '',
+        });
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || 'An error occurred while sending payment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate("/");
+  };
+
+  if (usersLoading) {
+    return <div className={styles.loading}>Loading...</div>;
+  }
+
+  if (usersError) {
+    return <ErrorMessage message={`Error loading users: ${usersError}`} />;
+  }
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background: "var(--color-primary)",
-        color: "var(--color-text-primary)",
-      }}
-    >
-      <MoneyPageAppBar username={user?.username || ""} title="Money" />
-      <Container
-        maxWidth="xs"
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          variant="h2"
-          sx={{
-            fontWeight: 700,
-            fontSize: "3rem",
-            mt: 2,
-            mb: 2,
-            color: "var(--color-text-primary)",
-          }}
-        >
-          {getDisplayAmount(amount)}
-        </Typography>
-        <MoneyDialPad amount={amount} setAmount={setAmount} />
-        <Box sx={{ display: "flex", gap: 2, width: "100%", maxWidth: 320 }}>
-          <Button
-            variant="contained"
-            sx={{
-              flex: 1,
-              background: "var(--color-secondary)",
-              color: "var(--color-text-primary)",
-              fontWeight: 700,
-              fontSize: "1.2rem",
-              py: 2,
-              "&:hover": { background: "var(--color-secondary-dark)" },
-            }}
-          >
-            Request
-          </Button>
-          <Button
-            disabled={!amount || amount === "0"}
-            variant="contained"
-            onClick={handleOpen}
-            sx={{
-              flex: 1,
-              background: "var(--color-primary-dark)",
-              color: "var(--color-text-primary)",
-              fontWeight: 700,
-              fontSize: "1.2rem",
-              py: 2,
-              "&:hover": { background: "var(--color-primary-light)" },
-            }}
-          >
-            Pay
-          </Button>
-        </Box>
-        <SendMoneyBottomDrawer open={open} onClose={handleClose} amount={amount} />
-      </Container>
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <div className={styles.navigation}>
+          <button className={styles.backButton} onClick={() => navigate("/")}>
+            ← Back
+          </button>
+          <MenuIcon />
+        </div>
+
+        <div className={styles.pageTitle}>
+          <div className={styles.titleText}>Money</div>
+          <div className={styles.subtitle}>
+            Send and request money
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.centerContent}>
+          <div className={styles.moneyCard}>
+            {success && (
+              <div className={styles.successMessage}>
+                {success}
+              </div>
+            )}
+
+            {error && (
+              <div className={styles.errorMessage}>
+                {error}
+              </div>
+            )}
+
+            <div className={styles.amountDisplay}>
+              {getDisplayAmount(amount)}
+            </div>
+
+            <MoneyDialPad amount={amount} setAmount={setAmount} />
+
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.formGroup}>
+                <label htmlFor="toUserId" className={styles.label}>
+                  To <span className={styles.required}>*</span>
+                </label>
+                <select
+                  id="toUserId"
+                  name="toUserId"
+                  value={formData.toUserId}
+                  onChange={handleInputChange}
+                  className={styles.select}
+                  required
+                >
+                  <option value="">Select recipient</option>
+                  {users
+                    .filter(userOption => userOption.id.toString() !== user.id)
+                    .map((userOption) => (
+                      <option key={userOption.id} value={userOption.id}>
+                        {userOption.username}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="note" className={styles.label}>
+                  Note (Optional)
+                </label>
+                <textarea
+                  id="note"
+                  name="note"
+                  value={formData.note}
+                  onChange={handleInputChange}
+                  className={styles.textarea}
+                  placeholder="Add a note for this payment..."
+                  maxLength={200}
+                />
+                <p className={styles.helperText}>
+                  Maximum 200 characters
+                </p>
+              </div>
+
+              {formData.toUserId && amount && parseFloat(amount) > 0 && (
+                <div className={styles.transferSummary}>
+                  <div className={styles.summaryTitle}>Payment Summary</div>
+                  <div className={styles.summaryRow}>
+                    <span className={styles.summaryLabel}>To:</span>
+                    <span className={styles.summaryValue}>
+                      {users.find(u => u.id.toString() === formData.toUserId)?.username || 'Unknown'}
+                    </span>
+                  </div>
+                  <div className={styles.summaryRow}>
+                    <span className={styles.summaryLabel}>Amount:</span>
+                    <span className={styles.summaryValue}>{formatCurrency(parseFloat(amount) || 0)}</span>
+                  </div>
+                </div>
+              )}
+
+              <div className={styles.buttonGroup}>
+                <button
+                  type="submit"
+                  disabled={loading || !amount || amount === "0" || amount === "." || !formData.toUserId}
+                  className={styles.submitButton}
+                >
+                  {loading ? 'Processing...' : 'Send Payment'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className={styles.cancelButton}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
       <BottomNavigation selected="Send" />
-    </Box>
+    </div>
   );
 };
 
