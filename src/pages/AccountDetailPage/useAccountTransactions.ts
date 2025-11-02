@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../../api/axios.interceptor";
 
 type Transaction = {
-  id: string;
+  id: number;
   amount: number;
   description: string;
   status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';

@@ -172,53 +172,14 @@ export const AccountTransferPage: React.FC = () => {
     return null;
   }
 
-  if (accounts.length < 2) {
-    return (
-      <div className={styles.accountTransferPage}>
-        <div className={styles.header}>
-
-          <div className={styles.pageTitle}>
-            <div className={styles.titleText}>Account Transfer</div>
-            <div className={styles.subtitle}>
-              Transfer funds between your accounts
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.content}>
-          <div className={styles.transferContainer}>
-            <div className={styles.transferCard}>
-              <div className={styles.errorMessage}>
-                You need at least 2 accounts to make transfers. Please create more accounts first.
-              </div>
-              <button 
-                className={styles.cancelButton}
-                onClick={handleCancel}
-                style={{ width: '100%' }}
-              >
-                Go to Accounts
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <BottomNavigation selected="Accounts" />
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.accountTransferPage}>
+    <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.userGreeting}>
-          <div className={styles.userInfo}>
-            <div className={styles.avatar}>
-              {getInitials(userDetails.username)}
-            </div>
-            <div className={styles.greeting}>
-              Hello, {userDetails.username}
-            </div>
-          </div>
+      <div className={styles.navigation}>
+          <button className={styles.backButton} onClick={() => navigate("/accounts")}>
+            ← Back
+          </button>
+          <MenuIcon />
         </div>
 
         <div className={styles.pageTitle}>
@@ -230,7 +191,7 @@ export const AccountTransferPage: React.FC = () => {
       </div>
 
       <div className={styles.content}>
-        <div className={styles.transferContainer}>
+        <div className={styles.centerContent}>
           <div className={styles.transferCard}>
             {success && (
               <div className={styles.successMessage}>

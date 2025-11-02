@@ -1,5 +1,5 @@
 import React from "react";
-import { AccountBalance, AttachMoney, AccountBox, TrendingFlat } from "@mui/icons-material";
+import { AccountBalance, AttachMoney, AccountBox, TrendingFlat, Receipt } from "@mui/icons-material";
 import {
   BottomNavigationAction,
   BottomNavigation as MuiBottomNavigation,
@@ -11,6 +11,7 @@ const labels = {
   Send: "Send",
   Accounts: "Accounts",
   Transfer: "Transfer",
+  Invoices: "Invoices",
 } as const;
 
 export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({selected}) => {
@@ -28,6 +29,7 @@ export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({sel
       <BottomNavigationAction value="Send" label={labels.Send} icon={<AttachMoney />} href="/money" />
       <BottomNavigationAction value="Accounts" label={labels.Accounts} icon={<AccountBox />} href="/accounts" />
       <BottomNavigationAction value="Transfer" label={labels.Transfer} icon={<TrendingFlat />} href="/accounts/transfer" />
+      <BottomNavigationAction value="Invoices" label={labels.Invoices} icon={<Receipt />} href="/accounts/invoices" />
     </MuiBottomNavigation>
   );
 };

@@ -16,6 +16,7 @@ import { AccountPage } from "./pages/AccountsPage/AccountsPage";
 import { CreateAccountPage } from "./pages/CreateAccountPage/CreateAccountPage";
 import { AccountTransferPage } from "./pages/AccountTransferPage/AccountTransferPage";
 import { AccountDetailPage } from "./pages/AccountDetailPage/AccountDetailPage";
+import { AccountInvoicePage } from "./pages/AccountInvoicePage/AccountInvoicePage";
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -33,6 +34,7 @@ function AppRoutes() {
           <Route path="/accounts/detail/:accountId" element={<AccountDetailPage  />} />
           <Route path="/accounts/create" element={<CreateAccountPage />} />
           <Route path="/accounts/transfer" element={<AccountTransferPage />} />
+          <Route path="/accounts/invoices" element={<AccountInvoicePage />} />
         </Routes>
       </>
     );
