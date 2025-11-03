@@ -67,12 +67,17 @@ export const SendInvoicePage: React.FC = () => {
       return 'Please select a due date';
     }
     
-    const dueDate = new Date(formData.dueDate);
+    // Parse the date string and normalize to local midnight for comparison
+    // Split the date string and create a Date in local timezone
+    const [year, month, day] = formData.dueDate.split('-').map(Number);
+    const dueDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+    
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
+    // Allow today's date - reject only past dates
     if (dueDate < today) {
-      return 'Due date must be in the future';
+      return 'Due date must be today or in the future';
     }
     
     return null;
