@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import api from '../api/axios.interceptor';
 
 type User = {
-  id: string;
+  id: number;
   username: string;
 }
 
@@ -33,7 +33,7 @@ export const useAuthProvider = () => {
     try {
       const decoded = jwtDecode<JwtPayload>(token);
       const user = {
-        id: decoded.sub,
+        id: Number(decoded.sub),
         username: decoded.username
       };
       return user;
@@ -57,7 +57,7 @@ export const useAuthProvider = () => {
       // Decode the JWT to get user information
       const decoded = jwtDecode<JwtPayload>(access_token);
       const userData = {
-        id: decoded.sub,
+        id: Number(decoded.sub),
         username: decoded.username
       };
 
@@ -98,7 +98,7 @@ export const useAuthProvider = () => {
           }
           const decoded = jwtDecode<JwtPayload>(e.newValue);
           const userData = {
-            id: decoded.sub,
+            id: Number(decoded.sub),
             username: decoded.username
           };
           console.log('Storage event: updating user state:', userData);

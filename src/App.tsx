@@ -16,23 +16,29 @@ import { AccountPage } from "./pages/AccountsPage/AccountsPage";
 import { CreateAccountPage } from "./pages/CreateAccountPage/CreateAccountPage";
 import { AccountTransferPage } from "./pages/AccountTransferPage/AccountTransferPage";
 import { AccountDetailPage } from "./pages/AccountDetailPage/AccountDetailPage";
+import { SendInvoicePage } from "./pages/SendInvoicePage/SendInvoicePage";
+import { InvoicePage } from "./pages/InvoicePage/InvoicePage";
+import { InvoiceDetailPage } from "./pages/InvoiceDetailPage/InvoiceDetailPage";
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
-  
+
   if (isAuthenticated) {
     return (
       <>
         <Routes>
-        {/* <header>
+          {/* <header>
         <Navbar />
       </header> */}
-          <Route path="/" element={<HomePage />} /> 
+          <Route path="/" element={<HomePage />} />
           <Route path="/money" element={<MoneyPage />} />
           <Route path="/accounts" element={<AccountPage />} />
-          <Route path="/accounts/detail/:accountId" element={<AccountDetailPage  />} />
+          <Route path="/accounts/detail/:accountId" element={<AccountDetailPage />} />
           <Route path="/accounts/create" element={<CreateAccountPage />} />
           <Route path="/accounts/transfer" element={<AccountTransferPage />} />
+          <Route path="/invoices" element={<InvoicePage />} />
+          <Route path="/invoices/send" element={<SendInvoicePage />} />
+          <Route path="/invoices/:invoiceId" element={<InvoiceDetailPage />} />
         </Routes>
       </>
     );

@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
-import { useAccounts } from "./useAccounts";
+import { useFetchAccounts } from "./useFetchAccounts";
 import { useAccountBalance } from "./useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { useNavigate } from "react-router-dom";
 import styles from "./AccountTransferPage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
 
 export const AccountTransferPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { userDetails, loading: profileLoading, error: profileError } = useUserProfile();
-  const { accounts, loading: accountsLoading, error: accountsError } = useAccounts();
+  const { accounts, loading: accountsLoading, error: accountsError } = useFetchAccounts();
   const { getAccountBalance } = useAccountBalance();
-  
+
   const [formData, setFormData] = useState({
     fromAccountId: '',
     toAccountId: '',
@@ -27,10 +27,7 @@ export const AccountTransferPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
-  if (!user) {
-    return null;
-  }
+
 
   // Load account balances when accounts are loaded
   useEffect(() => {
@@ -50,10 +47,6 @@ export const AccountTransferPage: React.FC = () => {
       loadBalances();
     }
   }, [accounts, getAccountBalance]);
-
-  const getInitials = (username: string) => {
-    return username ? username.charAt(0).toUpperCase() : "U";
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -91,20 +84,24 @@ export const AccountTransferPage: React.FC = () => {
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
       return 'Please enter a valid amount';
     }
-    
+
     const fromAccountBalance = accountBalances[parseInt(formData.fromAccountId)] || 0;
     const transferAmount = parseFloat(formData.amount);
-    
+
     if (transferAmount > fromAccountBalance) {
       return `Insufficient funds. Available balance: ${formatCurrency(fromAccountBalance)}`;
     }
-    
+
     return null;
   };
 
+  if (!user) {
+    return null;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -145,8 +142,8 @@ export const AccountTransferPage: React.FC = () => {
           setAccountBalances(balances);
         }
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'An error occurred during transfer');
+    } catch (err: unknown) {
+      setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'An error occurred during transfer');
     } finally {
       setLoading(false);
     }
@@ -172,65 +169,14 @@ export const AccountTransferPage: React.FC = () => {
     return null;
   }
 
-  if (accounts.length < 2) {
-    return (
-      <div className={styles.accountTransferPage}>
-        <div className={styles.header}>
-          <div className={styles.userGreeting}>
-            <div className={styles.userInfo}>
-              <div className={styles.avatar}>
-                {getInitials(userDetails.username)}
-              </div>
-              <div className={styles.greeting}>
-                Hello, {userDetails.username}
-              </div>
-            </div>
-            <MenuIcon />
-          </div>
-
-          <div className={styles.pageTitle}>
-            <div className={styles.titleText}>Account Transfer</div>
-            <div className={styles.subtitle}>
-              Transfer funds between your accounts
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.content}>
-          <div className={styles.transferContainer}>
-            <div className={styles.transferCard}>
-              <div className={styles.errorMessage}>
-                You need at least 2 accounts to make transfers. Please create more accounts first.
-              </div>
-              <button 
-                className={styles.cancelButton}
-                onClick={handleCancel}
-                style={{ width: '100%' }}
-              >
-                Go to Accounts
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <BottomNavigation selected="Accounts" />
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.accountTransferPage}>
+    <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.userGreeting}>
-          <div className={styles.userInfo}>
-            <div className={styles.avatar}>
-              {getInitials(userDetails.username)}
-            </div>
-            <div className={styles.greeting}>
-              Hello, {userDetails.username}
-            </div>
-          </div>
-          <MenuIcon />
+        <div className={styles.navigation}>
+          <button className={styles.backButton} onClick={() => navigate("/accounts")}>
+            ← Back
+          </button>
+          <SignOutButton />
         </div>
 
         <div className={styles.pageTitle}>
@@ -242,7 +188,7 @@ export const AccountTransferPage: React.FC = () => {
       </div>
 
       <div className={styles.content}>
-        <div className={styles.transferContainer}>
+        <div className={styles.centerContent}>
           <div className={styles.transferCard}>
             {success && (
               <div className={styles.successMessage}>
@@ -273,7 +219,7 @@ export const AccountTransferPage: React.FC = () => {
                   {accounts.map((account) => (
                     <option key={account.id} value={account.id}>
                       {account.name} ({account.accountType})
-                      {accountBalances[account.id] !== undefined && 
+                      {accountBalances[account.id] !== undefined &&
                         ` - ${formatCurrency(accountBalances[account.id])}`
                       }
                     </option>
@@ -297,13 +243,13 @@ export const AccountTransferPage: React.FC = () => {
                   {accounts
                     .filter(account => account.id.toString() !== formData.fromAccountId)
                     .map((account) => (
-                    <option key={account.id} value={account.id}>
-                      {account.name} ({account.accountType})
-                      {accountBalances[account.id] !== undefined && 
-                        ` - ${formatCurrency(accountBalances[account.id])}`
-                      }
-                    </option>
-                  ))}
+                      <option key={account.id} value={account.id}>
+                        {account.name} ({account.accountType})
+                        {accountBalances[account.id] !== undefined &&
+                          ` - ${formatCurrency(accountBalances[account.id])}`
+                        }
+                      </option>
+                    ))}
                 </select>
               </div>
 
@@ -387,7 +333,7 @@ export const AccountTransferPage: React.FC = () => {
         </div>
       </div>
 
-      <BottomNavigation selected="Accounts" />
+      <BottomNavigation selected="Transfer" />
     </div>
   );
 };

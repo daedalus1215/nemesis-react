@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAccountDetail } from "../../hooks/useAccountDetail";
 import { useAccountBalance } from "../../hooks/useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
 import styles from "./AccountDetailPage.module.css";
 import { TransactionHistorySection } from "./TransactionHistorySection/TransactionHistorySection";
 
 export const AccountDetailPage: React.FC = () => {
   const { accountId: id } = useParams<{ accountId: string }>();
-  console.log(id);
   const navigate = useNavigate();
   const accountId = parseInt(id || "0");
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
+  const lastScrollTop = useRef(0);
 
   const {
     account,
@@ -26,6 +28,36 @@ export const AccountDetailPage: React.FC = () => {
     loading: balanceLoading,
     error: balanceError,
   } = useAccountBalance(accountId);
+
+  useEffect(() => {
+    const contentElement = contentRef.current;
+    if (!contentElement) return;
+
+    const handleScroll = () => {
+      const scrollTop = contentElement.scrollTop;
+      const scrollThreshold = 50; // Start collapsing after 50px scroll
+
+      if (scrollTop > scrollThreshold) {
+        // Scrolling down
+        if (scrollTop > lastScrollTop.current) {
+          setIsHeaderCollapsed(true);
+        } else {
+          // Scrolling up
+          setIsHeaderCollapsed(false);
+        }
+      } else {
+        // Near the top, always show header
+        setIsHeaderCollapsed(false);
+      }
+
+      lastScrollTop.current = scrollTop;
+    };
+
+    contentElement.addEventListener("scroll", handleScroll);
+    return () => {
+      contentElement.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   if (!accountId) {
     return <ErrorMessage message="Invalid account ID" />;
@@ -73,50 +105,49 @@ export const AccountDetailPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <div className={styles.header}>
+      <div className={`${styles.header} ${isHeaderCollapsed ? styles.headerCollapsed : ""}`}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
           </button>
-          <MenuIcon />
+          <SignOutButton />
         </div>
 
-        <div className={styles.accountInfo}>
-          <div className={styles.accountName}>{account.name}</div>
-          <div className={styles.accountType}>{account.accountType}</div>
-          {account.isDefault && (
-            <span className={styles.defaultBadge}>Default Account</span>
-          )}
-        </div>
+        {!isHeaderCollapsed && (
+          <>
+            <div className={styles.pageTitle}>
+              <div className={styles.titleText}>{account.name} - {account.accountType}</div>
+              <div className={styles.subtitle}>
+                {account.isDefault && (
+                  <span className={styles.defaultBadge}>Default Account</span>
+                )}
+              </div>
+              <span className={styles.subtitle}>            {balanceLoading
+                  ? "Loading..."
+                  : balanceError
+                  ? "Error"
+                  : formatCurrency(balance || 0)}</span>
+            </div>
 
-        <div className={styles.balanceSection}>
-          <div className={styles.balanceLabel}>Current Balance</div>
-          <div className={styles.balanceAmount}>
-            {balanceLoading
-              ? "Loading..."
-              : balanceError
-              ? "Error"
-              : formatCurrency(balance || 0)}
-          </div>
-        </div>
-
-        <div className={styles.actionButtons}>
-          <button className={styles.actionButton} onClick={handleSendMoney}>
-            Send Money
-          </button>
-          <button className={styles.actionButton} onClick={handleTransferFunds}>
-            Transfer Funds
-          </button>
-          {!account.isDefault && (
-            <button className={styles.actionButton} onClick={handleSetDefault}>
-              Set as Default
-            </button>
-          )}
-        </div>
+            <div className={styles.actionButtons}>
+              <button className={styles.actionButton} onClick={handleSendMoney}>
+                Send Money
+              </button>
+              <button className={styles.actionButton} onClick={handleTransferFunds}>
+                Transfer Funds
+              </button>
+              {!account.isDefault && (
+                <button className={styles.actionButton} onClick={handleSetDefault}>
+                  Set as Default
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
-      <div className={styles.content}>
-        <TransactionHistorySection account={account} />
+      <div className={styles.content} ref={contentRef}>
+        <TransactionHistorySection account={account} scrollContainerRef={contentRef} />
       </div>
 
       <BottomNavigation selected="Accounts" />
