@@ -185,7 +185,7 @@ export const SendInvoicePage: React.FC = () => {
                 >
                   <option value="">Select recipient</option>
                   {users
-                    .filter(userOption => userOption.id.toString() !== user.id)
+                    .filter(userOption => userOption.id !== user.id)
                     .map((userOption) => (
                       <option key={userOption.id} value={userOption.id}>
                         {userOption.username}
