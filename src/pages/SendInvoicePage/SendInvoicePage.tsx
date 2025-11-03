@@ -115,7 +115,7 @@ export const SendInvoicePage: React.FC = () => {
         });
       }
     } catch (err: unknown) {
-      setError((err as Error).message || 'An error occurred while sending invoice');
+      setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'An error occurred while sending invoice');
     } finally {
       setLoading(false);
     }
