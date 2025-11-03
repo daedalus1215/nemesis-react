@@ -38,6 +38,11 @@ export const TransactionHistorySection: React.FC<
 
   // Accumulate transactions as we fetch more
   useEffect(() => {
+    // Only process when loading is complete
+    if (transactionsLoading) {
+      return;
+    }
+
     if (fetchedTransactions.length > 0) {
       if (offset === 0) {
         // First load - replace all transactions
@@ -51,13 +56,18 @@ export const TransactionHistorySection: React.FC<
       setHasMore(fetchedTransactions.length === transactionsPerPage);
       setIsLoadingMore(false);
       loadingMoreRef.current = false;
-    } else if (offset > 0 && fetchedTransactions.length === 0) {
-      // No more transactions
+    } else {
+      // Empty result - no more transactions to load
+      // Handle both initial load (offset === 0) and subsequent loads (offset > 0)
+      if (offset === 0) {
+        // Initial load returned empty - clear transactions
+        setAllTransactions([]);
+      }
       setHasMore(false);
       setIsLoadingMore(false);
       loadingMoreRef.current = false;
     }
-  }, [fetchedTransactions, offset, transactionsPerPage]);
+  }, [fetchedTransactions, offset, transactionsPerPage, transactionsLoading]);
 
   // Reset when account changes
   useEffect(() => {
