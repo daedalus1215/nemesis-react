@@ -11,7 +11,6 @@ import { TransactionHistorySection } from "./TransactionHistorySection/Transacti
 
 export const AccountDetailPage: React.FC = () => {
   const { accountId: id } = useParams<{ accountId: string }>();
-  console.log(id);
   const navigate = useNavigate();
   const accountId = parseInt(id || "0");
   const contentRef = useRef<HTMLDivElement>(null);
