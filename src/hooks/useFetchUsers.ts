@@ -20,8 +20,8 @@ export const useFetchUsers = (): UseUsersResult => {
         setError(null);
         const response = await api.get('/users');
         setUsers(response.data || []);
-      } catch (err: any) {
-        setError(err.response?.data?.message || err.message || 'Failed to load users');
+      } catch (err: unknown) {
+        setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'Failed to load users');
         setUsers([]);
       } finally {
         setLoading(false);

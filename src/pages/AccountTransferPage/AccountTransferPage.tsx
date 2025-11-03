@@ -16,7 +16,7 @@ export const AccountTransferPage: React.FC = () => {
   const { userDetails, loading: profileLoading, error: profileError } = useUserProfile();
   const { accounts, loading: accountsLoading, error: accountsError } = useFetchAccounts();
   const { getAccountBalance } = useAccountBalance();
-  
+
   const [formData, setFormData] = useState({
     fromAccountId: '',
     toAccountId: '',
@@ -27,10 +27,7 @@ export const AccountTransferPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
-  if (!user) {
-    return null;
-  }
+
 
   // Load account balances when accounts are loaded
   useEffect(() => {
@@ -50,10 +47,6 @@ export const AccountTransferPage: React.FC = () => {
       loadBalances();
     }
   }, [accounts, getAccountBalance]);
-
-  const getInitials = (username: string) => {
-    return username ? username.charAt(0).toUpperCase() : "U";
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -91,20 +84,24 @@ export const AccountTransferPage: React.FC = () => {
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
       return 'Please enter a valid amount';
     }
-    
+
     const fromAccountBalance = accountBalances[parseInt(formData.fromAccountId)] || 0;
     const transferAmount = parseFloat(formData.amount);
-    
+
     if (transferAmount > fromAccountBalance) {
       return `Insufficient funds. Available balance: ${formatCurrency(fromAccountBalance)}`;
     }
-    
+
     return null;
   };
 
+  if (!user) {
+    return null;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -145,8 +142,8 @@ export const AccountTransferPage: React.FC = () => {
           setAccountBalances(balances);
         }
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'An error occurred during transfer');
+    } catch (err: unknown) {
+      setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'An error occurred during transfer');
     } finally {
       setLoading(false);
     }
@@ -175,7 +172,7 @@ export const AccountTransferPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-      <div className={styles.navigation}>
+        <div className={styles.navigation}>
           <button className={styles.backButton} onClick={() => navigate("/accounts")}>
             ← Back
           </button>
@@ -222,7 +219,7 @@ export const AccountTransferPage: React.FC = () => {
                   {accounts.map((account) => (
                     <option key={account.id} value={account.id}>
                       {account.name} ({account.accountType})
-                      {accountBalances[account.id] !== undefined && 
+                      {accountBalances[account.id] !== undefined &&
                         ` - ${formatCurrency(accountBalances[account.id])}`
                       }
                     </option>
@@ -246,13 +243,13 @@ export const AccountTransferPage: React.FC = () => {
                   {accounts
                     .filter(account => account.id.toString() !== formData.fromAccountId)
                     .map((account) => (
-                    <option key={account.id} value={account.id}>
-                      {account.name} ({account.accountType})
-                      {accountBalances[account.id] !== undefined && 
-                        ` - ${formatCurrency(accountBalances[account.id])}`
-                      }
-                    </option>
-                  ))}
+                      <option key={account.id} value={account.id}>
+                        {account.name} ({account.accountType})
+                        {accountBalances[account.id] !== undefined &&
+                          ` - ${formatCurrency(accountBalances[account.id])}`
+                        }
+                      </option>
+                    ))}
                 </select>
               </div>
 

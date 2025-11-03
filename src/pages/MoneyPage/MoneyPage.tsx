@@ -95,8 +95,8 @@ export const MoneyPage: React.FC = () => {
           note: '',
         });
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'An error occurred while sending payment');
+    } catch (err: unknown) {
+      setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'An error occurred while sending payment');
     } finally {
       setLoading(false);
     }

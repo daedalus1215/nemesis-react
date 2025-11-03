@@ -109,8 +109,8 @@ export const SendInvoicePage: React.FC = () => {
           dueDate: '',
         });
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'An error occurred while sending invoice');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'An error occurred while sending invoice');
     } finally {
       setLoading(false);
     }

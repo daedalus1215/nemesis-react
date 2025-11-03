@@ -100,8 +100,8 @@ export const InvoiceDetailPage: React.FC = () => {
         // Refetch invoice to get updated status
         await refetchInvoice();
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'An error occurred while paying invoice');
+    } catch (err: unknown) {
+      setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'An error occurred while paying invoice');
     } finally {
       setLoading(false);
     }
