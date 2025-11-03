@@ -14,7 +14,7 @@ const labels = {
   Invoices: "Invoices",
 } as const;
 
-export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({selected}) => {
+export const BottomNavigation: React.FC<{ selected: keyof typeof labels }> = ({ selected }) => {
   const [value, setValue] = React.useState(selected);
   return (
     <MuiBottomNavigation
@@ -29,7 +29,7 @@ export const BottomNavigation: React.FC<{selected: keyof typeof labels}> = ({sel
       <BottomNavigationAction value="Send" label={labels.Send} icon={<AttachMoney />} href="/money" />
       <BottomNavigationAction value="Accounts" label={labels.Accounts} icon={<AccountBox />} href="/accounts" />
       <BottomNavigationAction value="Transfer" label={labels.Transfer} icon={<TrendingFlat />} href="/accounts/transfer" />
-      <BottomNavigationAction value="Invoices" label={labels.Invoices} icon={<Receipt />} href="/accounts/invoices" />
+      <BottomNavigationAction value="Invoices" label={labels.Invoices} icon={<Receipt />} href="/invoices" />
     </MuiBottomNavigation>
   );
 };

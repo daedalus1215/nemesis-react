@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
-import { useAccounts } from "./useAccounts";
+import { useFetchAccounts } from "./useFetchAccounts";
 import { useAccountBalance } from "./useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { useNavigate } from "react-router-dom";
 import styles from "./AccountTransferPage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
 
 export const AccountTransferPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { userDetails, loading: profileLoading, error: profileError } = useUserProfile();
-  const { accounts, loading: accountsLoading, error: accountsError } = useAccounts();
+  const { accounts, loading: accountsLoading, error: accountsError } = useFetchAccounts();
   const { getAccountBalance } = useAccountBalance();
   
   const [formData, setFormData] = useState({
@@ -179,7 +179,7 @@ export const AccountTransferPage: React.FC = () => {
           <button className={styles.backButton} onClick={() => navigate("/accounts")}>
             ← Back
           </button>
-          <MenuIcon />
+          <SignOutButton />
         </div>
 
         <div className={styles.pageTitle}>

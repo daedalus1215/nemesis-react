@@ -1,22 +1,15 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios.interceptor';
+import { Account } from '../../api/responses/account.response';
 
-interface Account {
-  id: number;
-  name: string;
-  isDefault: boolean;
-  accountType: string;
-  createdAt: string;
-}
-
-interface UseAccountsResult {
+type UseAccountsResult = {
   accounts: Account[];
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
 }
 
-export const useAccounts = (): UseAccountsResult => {
+export const useFetchAccounts = (): UseAccountsResult => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

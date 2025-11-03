@@ -7,7 +7,7 @@ import { BottomNavigation } from "../../components/BottomNavigation/BottomNaviga
 import { useNavigate } from "react-router-dom";
 import styles from "./HomePage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import { TransferIcon } from "../../components/icons/TransferIcon";
 
 export const HomePage: React.FC = () => {
@@ -70,7 +70,7 @@ export const HomePage: React.FC = () => {
               Hello, {userDetails.username}
             </div>
           </div>
-          <MenuIcon />
+          <SignOutButton />
         </div>
 
         <div className={styles.balanceSection}>

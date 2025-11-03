@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { useAuth } from "../../auth/useAuth";
 import { useNavigate } from "react-router-dom";
-import { MoneyDialPad } from "./components/MoneyDialPad";
+import { MoneyDialPad } from "../MoneyPage/components/MoneyDialPad";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import api from "../../api/axios.interceptor";
-import styles from "./MoneyPage.module.css";
-import { UserDropdown } from "../../forms/fields/UserDropdown/UserDropdown";
+import styles from "./SendInvoicePage.module.css";
 
 const getDisplayAmount = (amount: string) => {
   if (!amount || amount === ".") return "$0.00";
@@ -27,15 +26,16 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export const MoneyPage: React.FC = () => {
+export const SendInvoicePage: React.FC = () => {
   const [amount, setAmount] = useState("");
   const { user } = useAuth();
   const navigate = useNavigate();
   const { users, loading: usersLoading, error: usersError } = useFetchUsers();
   
   const [formData, setFormData] = useState({
-    toUserId: '',
-    note: '',
+    debtorUserId: '',
+    description: '',
+    dueDate: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -57,12 +57,24 @@ export const MoneyPage: React.FC = () => {
   };
 
   const validateForm = (): string | null => {
-    if (!formData.toUserId) {
+    if (!formData.debtorUserId) {
       return 'Please select a recipient';
     }
     if (!amount || parseFloat(amount) <= 0) {
       return 'Please enter a valid amount';
     }
+    if (!formData.dueDate) {
+      return 'Please select a due date';
+    }
+    
+    const dueDate = new Date(formData.dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (dueDate < today) {
+      return 'Due date must be in the future';
+    }
+    
     return null;
   };
 
@@ -80,31 +92,36 @@ export const MoneyPage: React.FC = () => {
       setError(null);
       setSuccess(null);
 
-      const response = await api.post('/accounts/transfer', {
-        toUserId: parseInt(formData.toUserId),
+      const response = await api.post('/invoices', {
+        debtorUserId: parseInt(formData.debtorUserId),
         amount: parseFloat(amount),
-        description: formData.note.trim() || undefined,
+        description: formData.description.trim() || undefined,
+        dueDate: formData.dueDate,
       });
 
       if (response.data.success) {
-        setSuccess(`Payment sent successfully! Transaction ID: ${response.data.transactionId || 'N/A'}`);
+        setSuccess(`Invoice sent successfully! Invoice ID: ${response.data.invoiceId || 'N/A'}`);
         // Reset form
         setAmount("");
         setFormData({
-          toUserId: '',
-          note: '',
+          debtorUserId: '',
+          description: '',
+          dueDate: '',
         });
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'An error occurred while sending payment');
+      setError(err.response?.data?.message || err.message || 'An error occurred while sending invoice');
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancel = () => {
-    navigate("/");
+    navigate("/accounts");
   };
+
+  // Get minimum date (today)
+  const today = new Date().toISOString().split('T')[0];
 
   if (usersLoading) {
     return <div className={styles.loading}>Loading...</div>;
@@ -118,23 +135,23 @@ export const MoneyPage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={() => navigate("/")}>
+          <button className={styles.backButton} onClick={() => navigate("/accounts")}>
             ← Back
           </button>
           <SignOutButton />
         </div>
 
         <div className={styles.pageTitle}>
-          <div className={styles.titleText}>Money</div>
+          <div className={styles.titleText}>Send Invoice</div>
           <div className={styles.subtitle}>
-            Send and request money
+            Create and send an invoice
           </div>
         </div>
       </div>
 
       <div className={styles.content}>
         <div className={styles.centerContent}>
-          <div className={styles.moneyCard}>
+          <div className={styles.invoiceCard}>
             {success && (
               <div className={styles.successMessage}>
                 {success}
@@ -154,19 +171,56 @@ export const MoneyPage: React.FC = () => {
             <MoneyDialPad amount={amount} setAmount={setAmount} />
 
             <form onSubmit={handleSubmit} className={styles.form}>
-              <UserDropdown formData={formData} handleInputChange={handleInputChange} users={users} user={user} />
+              <div className={styles.formGroup}>
+                <label htmlFor="debtorUserId" className={styles.label}>
+                  Bill To <span className={styles.required}>*</span>
+                </label>
+                <select
+                  id="debtorUserId"
+                  name="debtorUserId"
+                  value={formData.debtorUserId}
+                  onChange={handleInputChange}
+                  className={styles.select}
+                  required
+                >
+                  <option value="">Select recipient</option>
+                  {users
+                    .filter(userOption => userOption.id.toString() !== user.id)
+                    .map((userOption) => (
+                      <option key={userOption.id} value={userOption.id}>
+                        {userOption.username}
+                      </option>
+                    ))}
+                </select>
+              </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="note" className={styles.label}>
-                  Note (Optional)
+                <label htmlFor="dueDate" className={styles.label}>
+                  Due Date <span className={styles.required}>*</span>
+                </label>
+                <input
+                  type="date"
+                  id="dueDate"
+                  name="dueDate"
+                  value={formData.dueDate}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  min={today}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="description" className={styles.label}>
+                  Description (Optional)
                 </label>
                 <textarea
-                  id="note"
-                  name="note"
-                  value={formData.note}
+                  id="description"
+                  name="description"
+                  value={formData.description}
                   onChange={handleInputChange}
                   className={styles.textarea}
-                  placeholder="Add a note for this payment..."
+                  placeholder="Add a description for this invoice..."
                   maxLength={200}
                 />
                 <p className={styles.helperText}>
@@ -174,18 +228,24 @@ export const MoneyPage: React.FC = () => {
                 </p>
               </div>
 
-              {formData.toUserId && amount && parseFloat(amount) > 0 && (
-                <div className={styles.transferSummary}>
-                  <div className={styles.summaryTitle}>Payment Summary</div>
+              {formData.debtorUserId && amount && parseFloat(amount) > 0 && formData.dueDate && (
+                <div className={styles.invoiceSummary}>
+                  <div className={styles.summaryTitle}>Invoice Summary</div>
                   <div className={styles.summaryRow}>
-                    <span className={styles.summaryLabel}>To:</span>
+                    <span className={styles.summaryLabel}>Bill To:</span>
                     <span className={styles.summaryValue}>
-                      {users.find(u => u.id.toString() === formData.toUserId)?.username || 'Unknown'}
+                      {users.find(u => u.id.toString() === formData.debtorUserId)?.username || 'Unknown'}
                     </span>
                   </div>
                   <div className={styles.summaryRow}>
                     <span className={styles.summaryLabel}>Amount:</span>
                     <span className={styles.summaryValue}>{formatCurrency(parseFloat(amount) || 0)}</span>
+                  </div>
+                  <div className={styles.summaryRow}>
+                    <span className={styles.summaryLabel}>Due Date:</span>
+                    <span className={styles.summaryValue}>
+                      {new Date(formData.dueDate).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               )}
@@ -193,10 +253,10 @@ export const MoneyPage: React.FC = () => {
               <div className={styles.buttonGroup}>
                 <button
                   type="submit"
-                  disabled={loading || !amount || amount === "0" || amount === "." || !formData.toUserId}
+                  disabled={loading || !amount || amount === "0" || amount === "." || !formData.debtorUserId || !formData.dueDate}
                   className={styles.submitButton}
                 >
-                  {loading ? 'Processing...' : 'Send Payment'}
+                  {loading ? 'Sending...' : 'Send Invoice'}
                 </button>
                 <button
                   type="button"
@@ -211,9 +271,7 @@ export const MoneyPage: React.FC = () => {
         </div>
       </div>
 
-      <BottomNavigation selected="Send" />
+      <BottomNavigation selected="Invoices" />
     </div>
   );
 };
-
-export default MoneyPage;

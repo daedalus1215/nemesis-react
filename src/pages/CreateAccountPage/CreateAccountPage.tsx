@@ -5,7 +5,7 @@ import { BottomNavigation } from "../../components/BottomNavigation/BottomNaviga
 import { useNavigate } from "react-router-dom";
 import styles from "./CreateAccountPage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
 
 const ACCOUNT_TYPES = [
@@ -98,7 +98,7 @@ export const CreateAccountPage: React.FC = () => {
               Hello, {userDetails.username}
             </div>
           </div>
-          <MenuIcon />
+          <SignOutButton />
         </div>
 
         <div className={styles.pageTitle}>

@@ -5,7 +5,7 @@ import { useAccountBalances } from "./useAccountBalances";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
 import styles from "./AccountsPage.module.css";
 
@@ -80,7 +80,7 @@ export const AccountPage: React.FC = () => {
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
           </button>
-          <MenuIcon />
+          <SignOutButton />
         </div>
 
         <div className={styles.pageTitle}>

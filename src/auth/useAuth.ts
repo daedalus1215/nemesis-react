@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import api from '../api/axios.interceptor';
 
 type User = {
-  id: string;
+  id: number;
   username: string;
 }
 

@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react';
-import api from '../../api/axios.interceptor';
-
-type User = {
-  id: number;
-  username: string;
-};
+import api from '../api/axios.interceptor';
+import { User } from '../api/responses/user.response';
 
 type UseUsersResult = {
   users: User[];
@@ -12,7 +8,7 @@ type UseUsersResult = {
   error: string | null;
 };
 
-export const useUsers = (): UseUsersResult => {
+export const useFetchUsers = (): UseUsersResult => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

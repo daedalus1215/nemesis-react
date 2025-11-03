@@ -4,7 +4,7 @@ import { useAccountDetail } from "../../hooks/useAccountDetail";
 import { useAccountBalance } from "../../hooks/useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
-import { MenuIcon } from "../../components/icons/MenuIcon/MenuIcon";
+import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
 import styles from "./AccountDetailPage.module.css";
 import { TransactionHistorySection } from "./TransactionHistorySection/TransactionHistorySection";
@@ -111,7 +111,7 @@ export const AccountDetailPage: React.FC = () => {
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
           </button>
-          <MenuIcon />
+          <SignOutButton />
         </div>
 
         {!isHeaderCollapsed && (
