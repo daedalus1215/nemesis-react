@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import styles from "./TransactionHistorySection.module.css";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { useAccountTransactions } from "../useAccountTransactions";
@@ -9,92 +9,44 @@ type TransactionHistorySectionProps = {
   scrollContainerRef?: React.RefObject<HTMLDivElement>;
 };
 
-type TransactionWithType = {
-  id: number;
-  amount: number;
-  description: string;
-  status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
-  category: string;
-  type: 'INCOMING' | 'OUTGOING';
-  createdAt: string;
-};
-
 export const TransactionHistorySection: React.FC<
   TransactionHistorySectionProps
 > = ({ account, scrollContainerRef: externalScrollRef }) => {
-  const [transactionsPerPage] = useState(20);
-  const [offset, setOffset] = useState(0);
-  const [allTransactions, setAllTransactions] = useState<TransactionWithType[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const transactionsListRef = useRef<HTMLDivElement>(null);
-  const loadingMoreRef = useRef(false);
+  const isLoadingMoreRef = useRef(false);
   
   const {
-    transactions: fetchedTransactions,
+    transactions,
     loading: transactionsLoading,
     error: transactionsError,
-  } = useAccountTransactions(account.id, transactionsPerPage, offset);
-
-  // Accumulate transactions as we fetch more
-  useEffect(() => {
-    // Only process when loading is complete
-    if (transactionsLoading) {
-      return;
-    }
-
-    if (fetchedTransactions.length > 0) {
-      if (offset === 0) {
-        // First load - replace all transactions
-        setAllTransactions(fetchedTransactions);
-      } else {
-        // Subsequent loads - append new transactions
-        setAllTransactions(prev => [...prev, ...fetchedTransactions]);
-      }
-      
-      // Check if we have more transactions to load
-      setHasMore(fetchedTransactions.length === transactionsPerPage);
-      setIsLoadingMore(false);
-      loadingMoreRef.current = false;
-    } else {
-      // Empty result - no more transactions to load
-      // Handle both initial load (offset === 0) and subsequent loads (offset > 0)
-      if (offset === 0) {
-        // Initial load returned empty - clear transactions
-        setAllTransactions([]);
-      }
-      setHasMore(false);
-      setIsLoadingMore(false);
-      loadingMoreRef.current = false;
-    }
-  }, [fetchedTransactions, offset, transactionsPerPage, transactionsLoading]);
-
-  // Reset when account changes
-  useEffect(() => {
-    setOffset(0);
-    setAllTransactions([]);
-    setHasMore(true);
-  }, [account.id]);
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useAccountTransactions(account.id, 20);
 
   const loadMore = useCallback(() => {
-    if (loadingMoreRef.current || !hasMore || transactionsLoading) {
+    if (isLoadingMoreRef.current || !hasNextPage || transactionsLoading || isFetchingNextPage) {
       return;
     }
     
-    loadingMoreRef.current = true;
-    setIsLoadingMore(true);
-    setOffset(prev => prev + transactionsPerPage);
-  }, [hasMore, transactionsLoading, transactionsPerPage]);
+    isLoadingMoreRef.current = true;
+    fetchNextPage();
+  }, [hasNextPage, transactionsLoading, isFetchingNextPage, fetchNextPage]);
+
+  // Reset loading ref when fetch completes
+  useEffect(() => {
+    if (!isFetchingNextPage) {
+      isLoadingMoreRef.current = false;
+    }
+  }, [isFetchingNextPage]);
 
   // Scroll detection for infinite scroll
   useEffect(() => {
-    // Use the external scroll ref if provided, otherwise find scrollable parent
     const getScrollContainer = (): HTMLElement | null => {
       if (externalScrollRef?.current) {
         return externalScrollRef.current;
       }
       
-      // Fallback: find scrollable parent
       const findScrollableParent = (element: HTMLElement | null): HTMLElement | null => {
         if (!element) return null;
         
@@ -120,11 +72,10 @@ export const TransactionHistorySection: React.FC<
         if (!ticking) {
           window.requestAnimationFrame(() => {
             const { scrollTop, scrollHeight, clientHeight } = container;
-            // Load more when user is 300px from bottom
             const threshold = 300;
             const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
             
-            if (distanceFromBottom < threshold && hasMore && !loadingMoreRef.current && !transactionsLoading) {
+            if (distanceFromBottom < threshold && hasNextPage && !isLoadingMoreRef.current && !transactionsLoading && !isFetchingNextPage) {
               loadMore();
             }
             
@@ -140,13 +91,11 @@ export const TransactionHistorySection: React.FC<
       };
     };
 
-    // Try to get scroll container immediately
     scrollContainer = getScrollContainer();
     
     if (scrollContainer) {
       cleanup = setupScrollListener(scrollContainer);
     } else {
-      // Retry after a short delay if container not found
       const timeoutId = setTimeout(() => {
         const retryContainer = getScrollContainer();
         if (retryContainer) {
@@ -163,7 +112,7 @@ export const TransactionHistorySection: React.FC<
     return () => {
       if (cleanup) cleanup();
     };
-  }, [externalScrollRef, hasMore, transactionsLoading, loadMore]);
+  }, [externalScrollRef, hasNextPage, transactionsLoading, isFetchingNextPage, loadMore]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -172,7 +121,7 @@ export const TransactionHistorySection: React.FC<
     }).format(amount);
   };
 
-  if (transactionsLoading && allTransactions.length === 0) {
+  if (transactionsLoading && transactions.length === 0) {
     return <div className={styles.loading}>Loading transactions...</div>;
   }
 
@@ -194,9 +143,9 @@ export const TransactionHistorySection: React.FC<
         <ErrorMessage
           message={`Error loading transactions: ${transactionsError}`}
         />
-      ) : allTransactions && allTransactions.length > 0 ? (
+      ) : transactions && transactions.length > 0 ? (
         <div className={styles.transactionsList} ref={transactionsListRef}>
-          {allTransactions.map((transaction) => (
+          {transactions.map((transaction) => (
             <div key={transaction.id} className={styles.transactionItem}>
               <div className={styles.transactionHeader}>
                 <span className={styles.transactionType}>
@@ -229,12 +178,12 @@ export const TransactionHistorySection: React.FC<
               </div>
             </div>
           ))}
-          {isLoadingMore && (
+          {isFetchingNextPage && (
             <div className={styles.loadingMore}>
               Loading more transactions...
             </div>
           )}
-          {!hasMore && allTransactions.length > 0 && (
+          {!hasNextPage && transactions.length > 0 && (
             <div className={styles.noMoreTransactions}>
               No more transactions to load
             </div>

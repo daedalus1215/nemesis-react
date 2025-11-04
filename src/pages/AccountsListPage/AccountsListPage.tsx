@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
-import styles from "./AccountsPage.module.css";
+import styles from "./AccountsListPage.module.css";
 
-export const AccountPage: React.FC = () => {
+export const AccountsListPage: React.FC = () => {
   const navigate = useNavigate();
   const {
     userDetails,

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { QueryObserverResult, useQuery } from "@tanstack/react-query";
 import api from "../api/axios.interceptor";
 
 export type AccountDetail = {
@@ -13,7 +13,7 @@ type UseAccountDetailResult = {
   account: AccountDetail;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => Promise<QueryObserverResult<unknown, Error>>;
 };
 
 export const useAccountDetail = (accountId: number): UseAccountDetailResult => {
