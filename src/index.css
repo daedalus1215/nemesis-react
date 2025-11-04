@@ -48,7 +48,7 @@ a:hover {
 html,
 body,
 #root {
-  height: 100%;
+  height: 100vh;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -60,6 +60,8 @@ body {
   color: white;
   max-width: 100%;
   margin: auto;
+  /* height: 90vh;
+  overflow-y: scroll; */
 }
 
 h1 {

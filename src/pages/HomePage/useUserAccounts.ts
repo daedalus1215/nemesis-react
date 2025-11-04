@@ -7,6 +7,7 @@ interface Account {
   accountType: string;
   isDefault: boolean;
   createdAt: string;
+  balance: number;
 }
 
 interface UserAccountsResponse {

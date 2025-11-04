@@ -105,7 +105,7 @@ export const AccountDetailPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <div className={`${styles.header} ${isHeaderCollapsed ? styles.headerCollapsed : ""}`}>
+      <div className={`${styles.header}`}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
