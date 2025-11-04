@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import api from "../../api/axios.interceptor";
-import styles from "./AccountsPage.module.css";
+import styles from "./AccountsListPage.module.css";
 
-export const AccountPage: React.FC = () => {
+export const AccountsListPage: React.FC = () => {
   const navigate = useNavigate();
   const {
     userDetails,
@@ -80,14 +80,14 @@ export const AccountPage: React.FC = () => {
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
           </button>
-          <SignOutButton />
-        </div>
+          <div className={styles.pageTitle}>
+            <div className={styles.titleText}>My Accounts</div>
+            <div className={styles.subtitle}>Manage your financial accounts</div>
+          </div>
 
-        <div className={styles.pageTitle}>
-          <div className={styles.titleText}>My Accounts</div>
-          <div className={styles.subtitle}>Manage your financial accounts</div>
-        </div>
 
+        <SignOutButton />
+        </div>
         <div className={styles.actionButtons}>
           <button className={styles.actionButton} onClick={handleCreateAccount}>
             + Add Account
@@ -98,6 +98,7 @@ export const AccountPage: React.FC = () => {
           <button className={styles.actionButton} onClick={handleSendMoney}>
             Send Money
           </button>
+
         </div>
       </div>
 
@@ -114,9 +115,8 @@ export const AccountPage: React.FC = () => {
               {accounts.map((account) => (
                 <div
                   key={account.id}
-                  className={`${styles.accountCard} ${
-                    account.isDefault ? styles.defaultAccount : ""
-                  }`}
+                  className={`${styles.accountCard} ${account.isDefault ? styles.defaultAccount : ""
+                    }`}
                   onClick={() => navigate(`/accounts/detail/${account.id}`)}
                   style={{ cursor: "pointer" }}
                 >
@@ -142,8 +142,8 @@ export const AccountPage: React.FC = () => {
                         {balancesLoading
                           ? "Loading..."
                           : accountBalances?.[account.id] !== undefined
-                          ? formatCurrency(accountBalances[account.id])
-                          : "Error"}
+                            ? formatCurrency(accountBalances[account.id])
+                            : "Error"}
                       </span>
                     </div>
                     <div className={styles.accountDetail}>

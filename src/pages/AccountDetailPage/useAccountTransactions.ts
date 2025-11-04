@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, InfiniteData } from "@tanstack/react-query";
 import api from "../../api/axios.interceptor";
 
 type Transaction = {
@@ -20,27 +20,36 @@ type TransactionWithType = Transaction & {
   otherAccountId: number;
 };
 
+type PageData = {
+  transactions: TransactionWithType[];
+  currentBalance: number;
+};
+
 type UseAccountTransactionsResult = {
   transactions: TransactionWithType[];
   loading: boolean;
   error: string | null;
-  // refetch: () => Promise<void>;
+  hasNextPage: boolean;
+  fetchNextPage: () => void;
+  isFetchingNextPage: boolean;
 };
 
 export const useAccountTransactions = (
   accountId: number,
   limit: number = 20,
-  offset: number = 0
 ): UseAccountTransactionsResult => {
   const {
     data,
     isLoading: loading,
     error,
-  } = useQuery({
-    queryKey: ['accountPayments', accountId, limit, offset],
-    queryFn: async () => {
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<PageData, Error, InfiniteData<PageData>, (string | number)[], number>({
+    queryKey: ['accountPayments', accountId, limit],
+    queryFn: async ({ pageParam = 0 }) => {
       const response = await api.get(`/accounts/${accountId}/payments`, {
-        params: { limit, offset }
+        params: { limit, offset: pageParam }
       });
       
       // Transform transactions to add type and other account info
@@ -55,13 +64,29 @@ export const useAccountTransactions = (
       
       return { transactions, currentBalance: response.data.currentBalance };
     },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      // If last page had fewer transactions than limit, we've reached the end
+      if (lastPage.transactions.length < limit) {
+        return undefined;
+      }
+      // Otherwise, return the next offset
+      return allPages.length * limit;
+    },
     enabled: !!accountId,
     staleTime: 1000 * 60 * 2, // Cache for 2 minutes
+    refetchOnMount: 'always',
   });
 
+  // Flatten all pages into a single array
+  const transactions = data?.pages.flatMap(page => page.transactions) || [];
+
   return {
-    transactions: data?.transactions || [],
+    transactions,
     loading,
     error: error ? (error as Error).message : null,
+    hasNextPage: hasNextPage ?? false,
+    fetchNextPage,
+    isFetchingNextPage,
   };
 };

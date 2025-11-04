@@ -109,7 +109,7 @@ export const HomePage: React.FC = () => {
               {accounts.map((account) => (
                 <div key={account.id} className={styles.accountCard}>
                   <div className={styles.accountHeader}>
-                    <span className={styles.accountName}>{account.name}</span>
+                    <span className={styles.accountName}>{account.name} - {formatCurrency(account.balance)}</span>
                     {account.isDefault && (
                       <span className={styles.defaultBadge}>Default</span>
                     )}

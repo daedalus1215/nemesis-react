@@ -121,14 +121,13 @@ export const MoneyPage: React.FC = () => {
           <button className={styles.backButton} onClick={() => navigate("/")}>
             ← Back
           </button>
-          <SignOutButton />
-        </div>
-
-        <div className={styles.pageTitle}>
+          <div className={styles.pageTitle}>
           <div className={styles.titleText}>Money</div>
           <div className={styles.subtitle}>
             Send and request money
           </div>
+        </div>
+          <SignOutButton />
         </div>
       </div>
 

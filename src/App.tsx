@@ -12,7 +12,7 @@ import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { AuthProvider } from "./auth/AuthContext";
 import { HomePage } from "./pages/HomePage/HomePage";
 import { MoneyPage } from "./pages/MoneyPage/MoneyPage";
-import { AccountPage } from "./pages/AccountsPage/AccountsPage";
+import { AccountsListPage } from "./pages/AccountsListPage/AccountsListPage";
 import { CreateAccountPage } from "./pages/CreateAccountPage/CreateAccountPage";
 import { AccountTransferPage } from "./pages/AccountTransferPage/AccountTransferPage";
 import { AccountDetailPage } from "./pages/AccountDetailPage/AccountDetailPage";
@@ -32,7 +32,7 @@ function AppRoutes() {
       </header> */}
           <Route path="/" element={<HomePage />} />
           <Route path="/money" element={<MoneyPage />} />
-          <Route path="/accounts" element={<AccountPage />} />
+          <Route path="/accounts" element={<AccountsListPage />} />
           <Route path="/accounts/detail/:accountId" element={<AccountDetailPage />} />
           <Route path="/accounts/create" element={<CreateAccountPage />} />
           <Route path="/accounts/transfer" element={<AccountTransferPage />} />

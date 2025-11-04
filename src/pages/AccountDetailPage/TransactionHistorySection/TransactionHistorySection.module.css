@@ -1,21 +1,10 @@
-.sectionHeader h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--color-text-primary);
-    margin: 0;
-}
-
-.accountMeta {
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-}
 
 .transactionsList {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    height: calc(100vh - 800px);
-    gap: 10px;
+    height: calc(100vh - 400px);
+    gap: 10px; */
+    /* overflow-y: scroll; */
 }
 
 .transactionItem {
