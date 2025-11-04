@@ -88,14 +88,12 @@ export const InvoicePage: React.FC = () => {
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
           </button>
-          <SignOutButton />
-        </div>
-
-        <div className={styles.pageTitle}>
+          <div className={styles.pageTitle}>
           <div className={styles.titleText}>Invoices</div>
           <div className={styles.subtitle}>Manage your invoices</div>
         </div>
-
+          <SignOutButton />
+        </div>
         <div className={styles.actionButtons}>
           <button className={styles.actionButton} onClick={handleSendInvoice}>
             + Send Invoice

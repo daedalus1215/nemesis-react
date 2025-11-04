@@ -176,16 +176,16 @@ export const AccountTransferPage: React.FC = () => {
           <button className={styles.backButton} onClick={() => navigate("/accounts")}>
             ← Back
           </button>
-          <SignOutButton />
-        </div>
-
-        <div className={styles.pageTitle}>
-          <div className={styles.titleText}>Account Transfer</div>
+          <div className={styles.pageTitle}>
+          <div className={styles.titleText}>Internal Transfer</div>
           <div className={styles.subtitle}>
-            Transfer funds between your accounts
+            Transfer funds between accounts
           </div>
         </div>
+          <SignOutButton />
+        </div>
       </div>
+
 
       <div className={styles.content}>
         <div className={styles.centerContent}>
