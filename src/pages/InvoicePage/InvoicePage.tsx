@@ -153,6 +153,12 @@ export const InvoicePage: React.FC = () => {
                       </span>
                     </div>
                     <div className={styles.invoiceDetail}>
+                      <span className={styles.detailLabel}>Description:</span>
+                      <span className={styles.detailValue}>
+                        {invoice.description}
+                      </span>
+                    </div>
+                    <div className={styles.invoiceDetail}>
                       <span className={styles.detailLabel}>Status:</span>
                       <span
                         className={`${styles.detailValue} ${styles.status} ${getStatusColor(

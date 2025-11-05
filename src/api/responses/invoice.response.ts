@@ -7,5 +7,6 @@ export type Invoice = {
   status: string;
   issueDate: string;
   dueDate: string;
+  description?: string;
 };
 
