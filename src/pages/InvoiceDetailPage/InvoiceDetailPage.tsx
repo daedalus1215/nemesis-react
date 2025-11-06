@@ -5,7 +5,7 @@ import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import { useAuth } from "../../auth/useAuth";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
-import { useInvoice } from "./useInvoice";
+import { useFetchInvoiceById } from "./useFetchInvoiceById";
 import api from "../../api/axios.interceptor";
 import styles from "./InvoiceDetailPage.module.css";
 
@@ -15,7 +15,7 @@ export const InvoiceDetailPage: React.FC = () => {
   const { user } = useAuth();
   const invoiceId = parseInt(id || "0");
   
-  const { invoice, loading: invoiceLoading, error: invoiceError, refetch: refetchInvoice } = useInvoice(invoiceId);
+  const { invoice, loading: invoiceLoading, error: invoiceError, refetch: refetchInvoice } = useFetchInvoiceById(invoiceId);
   const { users } = useFetchUsers();
   
   const [loading, setLoading] = useState(false);
@@ -114,14 +114,13 @@ export const InvoiceDetailPage: React.FC = () => {
           <button className={styles.backButton} onClick={handleBack}>
             ← Back
           </button>
-          <SignOutButton />
-        </div>
-
-        <div className={styles.pageTitle}>
+          <div className={styles.pageTitle}>
           <div className={styles.titleText}>Invoice #{invoice.id}</div>
           <div className={styles.subtitle}>
             {isIssuer ? "You issued this invoice" : "You owe this invoice"}
           </div>
+        </div>
+          <SignOutButton />
         </div>
       </div>
 
@@ -176,6 +175,12 @@ export const InvoiceDetailPage: React.FC = () => {
                     : getUserName(invoice.issuerUserId)}
                 </span>
               </div>
+              <div className={styles.invoiceDetail}>
+                      <span className={styles.detailLabel}>Description:</span>
+                      <span className={styles.detailValue}>
+                        {invoice.description}
+                      </span>
+                    </div>
               <div className={styles.invoiceDetail}>
                 <span className={styles.detailLabel}>Issue Date:</span>
                 <span className={styles.detailValue}>

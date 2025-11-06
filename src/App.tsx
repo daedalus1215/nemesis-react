@@ -17,7 +17,7 @@ import { CreateAccountPage } from "./pages/CreateAccountPage/CreateAccountPage";
 import { AccountTransferPage } from "./pages/AccountTransferPage/AccountTransferPage";
 import { AccountDetailPage } from "./pages/AccountDetailPage/AccountDetailPage";
 import { SendInvoicePage } from "./pages/SendInvoicePage/SendInvoicePage";
-import { InvoicePage } from "./pages/InvoicePage/InvoicePage";
+import { InvoicePage } from "./pages/InvoiceListPage/InvoiceListPage";
 import { InvoiceDetailPage } from "./pages/InvoiceDetailPage/InvoiceDetailPage";
 
 function AppRoutes() {

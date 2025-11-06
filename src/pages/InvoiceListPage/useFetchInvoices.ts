@@ -9,7 +9,7 @@ interface UseInvoicesResult {
   refetch: () => Promise<void>;
 }
 
-export const useInvoices = (statuses?: string[]): UseInvoicesResult => {
+export const useFetchInvoices = (statuses?: string[]): UseInvoicesResult => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

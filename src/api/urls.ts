@@ -1,0 +1,1 @@
+export const INVOICE_DETAIL_URL = (invoiceId: number) => `/invoices/detail/${invoiceId}`;

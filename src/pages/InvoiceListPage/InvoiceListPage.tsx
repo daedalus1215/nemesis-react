@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useInvoices } from "./useInvoices";
+import { useFetchInvoices } from "./useFetchInvoices";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import { useAuth } from "../../auth/useAuth";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
-import styles from "./InvoicePage.module.css";
+import styles from "./InvoiceListPage.module.css";
 
 type InvoiceStatusFilter = "all" | "draft" | "sent" | "paid" | "overdue";
 
@@ -23,7 +23,7 @@ export const InvoicePage: React.FC = () => {
       ? ["sent", "overdue"]
       : [statusFilter];
 
-  const { invoices, loading, error } = useInvoices(statuses);
+  const { invoices, loading, error } = useFetchInvoices(statuses);
 
   const handleBack = () => {
     navigate("/");
