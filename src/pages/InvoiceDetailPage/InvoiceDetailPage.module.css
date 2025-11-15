@@ -243,6 +243,11 @@
   color: rgb(220, 38, 38);
 }
 
+.statusCancelled {
+  background-color: rgba(156, 163, 175, 0.2);
+  color: rgb(107, 114, 128);
+}
+
 .invoiceDetails {
   display: flex;
   flex-direction: column;
@@ -352,6 +357,39 @@
   text-align: center;
   color: var(--color-text-secondary);
   font-size: 14px;
+}
+
+.cancelSection {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 2px solid var(--color-border);
+}
+
+.cancelButton {
+  width: 100%;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 2px solid var(--color-border);
+  border-radius: 25px;
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgb(220, 38, 38);
+  color: rgb(220, 38, 38);
+  transform: translateY(-1px);
+}
+
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 @media (max-width: 480px) {

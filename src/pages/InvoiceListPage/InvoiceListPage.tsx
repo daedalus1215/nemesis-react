@@ -8,18 +8,20 @@ import { useAuth } from "../../auth/useAuth";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
 import styles from "./InvoiceListPage.module.css";
 
-type InvoiceStatusFilter = "all" | "draft" | "sent" | "paid" | "overdue";
+type InvoiceStatusFilter = "pending" | "all" | "draft" | "sent" | "paid" | "overdue" | "cancelled";
 
 export const InvoicePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { users } = useFetchUsers();
-  const [statusFilter, setStatusFilter] = useState<InvoiceStatusFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<InvoiceStatusFilter>("pending");
 
   const statuses =
     statusFilter === "all"
       ? undefined
       : statusFilter === "sent"
+      ? ["sent", "overdue"]
+      : statusFilter === "pending"
       ? ["sent", "overdue"]
       : [statusFilter];
 
@@ -63,6 +65,8 @@ export const InvoicePage: React.FC = () => {
         return styles.statusPaid;
       case "overdue":
         return styles.statusOverdue;
+      case "cancelled":
+        return styles.statusCancelled;
       default:
         return "";
     }
@@ -104,7 +108,7 @@ export const InvoicePage: React.FC = () => {
       <div className={styles.content}>
         <div className={styles.filterSection}>
           <div className={styles.filterButtons}>
-            {(["all", "draft", "sent", "paid", "overdue"] as InvoiceStatusFilter[]).map(
+            {(["pending", "all", "draft", "sent", "paid", "overdue", "cancelled"] as InvoiceStatusFilter[]).map(
               (filter) => (
                 <button
                   key={filter}
@@ -113,7 +117,7 @@ export const InvoicePage: React.FC = () => {
                   }`}
                   onClick={() => setStatusFilter(filter)}
                 >
-                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                  {filter === "pending" ? "Pending" : filter.charAt(0).toUpperCase() + filter.slice(1)}
                 </button>
               )
             )}
