@@ -297,6 +297,11 @@
   color: rgb(220, 38, 38);
 }
 
+.statusCancelled {
+  background-color: rgba(156, 163, 175, 0.2);
+  color: rgb(107, 114, 128);
+}
+
 .noInvoices {
   text-align: center;
   padding: 60px 20px;

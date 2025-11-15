@@ -7,6 +7,7 @@ import { useAuth } from "../../auth/useAuth";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
 import { useFetchInvoiceById } from "./useFetchInvoiceById";
 import api from "../../api/axios.interceptor";
+import { CANCEL_INVOICE_URL } from "../../api/urls";
 import styles from "./InvoiceDetailPage.module.css";
 
 export const InvoiceDetailPage: React.FC = () => {
@@ -45,6 +46,7 @@ export const InvoiceDetailPage: React.FC = () => {
   const isDebtor = invoice.debtorUserId === user.id;
   const isIssuer = invoice.issuerUserId === user.id;
   const canPay = isDebtor && invoice.status !== "paid" && invoice.balanceDue > 0;
+  const canCancel = isIssuer && invoice.status !== "cancelled" && invoice.status !== "paid";
 
   const getUserName = (userId: number): string => {
     const foundUser = users.find((u) => u.id === userId);
@@ -76,6 +78,8 @@ export const InvoiceDetailPage: React.FC = () => {
         return styles.statusPaid;
       case "overdue":
         return styles.statusOverdue;
+      case "cancelled":
+        return styles.statusCancelled;
       default:
         return "";
     }
@@ -102,6 +106,26 @@ export const InvoiceDetailPage: React.FC = () => {
       }
     } catch (err: unknown) {
       setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'An error occurred while paying invoice');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelInvoice = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setSuccess(null);
+
+      const response = await api.post(CANCEL_INVOICE_URL(invoiceId));
+
+      if (response.data.success) {
+        setSuccess('Invoice cancelled successfully!');
+        // Refetch invoice to get updated status
+        await refetchInvoice();
+      }
+    } catch (err: unknown) {
+      setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || (err as Error).message || 'An error occurred while cancelling invoice');
     } finally {
       setLoading(false);
     }
@@ -229,6 +253,18 @@ export const InvoiceDetailPage: React.FC = () => {
                   : !isDebtor
                   ? "Only the debtor can pay this invoice."
                   : "This invoice cannot be paid."}
+              </div>
+            )}
+
+            {canCancel && (
+              <div className={styles.cancelSection}>
+                <button
+                  onClick={handleCancelInvoice}
+                  disabled={loading}
+                  className={styles.cancelButton}
+                >
+                  {loading ? 'Processing...' : 'Cancel Invoice'}
+                </button>
               </div>
             )}
           </div>
