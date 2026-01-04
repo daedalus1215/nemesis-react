@@ -12,22 +12,36 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       strategies: 'generateSW',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'favicon-192x192.png', 'favicon-512x512.png'],
       manifest: {
         name: 'Nemesis',
         short_name: 'Nemesis',
-        theme_color: '#ffffff',
+        description: 'Nemesis React Application',
+        theme_color: '#000000',
+        background_color: '#ffffff',
         icons: [
           {
-            src: '/favicon.ico',
-            sizes: '64x64 32x32 24x24 16x16',
-            type: 'image/x-icon'
+            src: '/favicon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: '/favicon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: '/apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png'
           }
         ],
         id: '/',
         start_url: '/',
         display: 'standalone',
-        background_color: '#ffffff'
+        orientation: 'portrait'
       },
       devOptions: {
         enabled: true,
