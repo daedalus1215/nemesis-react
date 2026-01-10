@@ -80,7 +80,7 @@ export const InvoicePage: React.FC = () => {
     const isIssuer = invoice.issuerUserId === user?.id;
     return (
       <span className={isIssuer ? styles.badgeIssuer : styles.badgeDebtor}>
-        {isIssuer ? "Issued" : "Owed"}
+        {isIssuer ? "Issued" : "Owe"}
       </span>
     );
   };
