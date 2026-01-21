@@ -5,6 +5,7 @@ import { useAccountBalance } from "../../hooks/useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
+import { BackButton } from "../../components/BackButton/BackButton";
 import { Fab } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import api from "../../api/axios.interceptor";
@@ -36,7 +37,7 @@ export const AccountDetailPage: React.FC = () => {
   }
 
   const handleBack = () => {
-    navigate("/accounts");
+    navigate(-1);
   };
 
   const handleSetDefault = async () => {
@@ -87,9 +88,7 @@ export const AccountDetailPage: React.FC = () => {
     <div className={styles.page}>
       <div className={`${styles.header}`}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={handleBack}>
-            ←
-          </button>
+          <BackButton />
           <div className={styles.pageTitle}>
               <div className={styles.titleText}>{account.name} - {account.accountType}</div>
               <span className={styles.subtitle}>            {balanceLoading

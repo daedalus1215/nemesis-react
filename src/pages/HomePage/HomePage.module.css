@@ -6,6 +6,13 @@
   overflow: hidden;
 }
 
+@media (min-width: 769px) {
+  .homePage {
+    margin-left: var(--sidebar-width);
+    max-width: calc(100% - var(--sidebar-width));
+  }
+}
+
 .header {
   background: linear-gradient(135deg, var(--color-secondary-dark) 0%, var(--color-secondary) 100%);
   color: var(--color-text-primary);
@@ -20,6 +27,13 @@
   .header {
     padding: var(--spacing-sm) var(--spacing-base);
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+}
+
+@media (min-width: 769px) {
+  .header {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+    border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
   }
 }
 
@@ -52,12 +66,26 @@
   flex-shrink: 0;
 }
 
+@media (min-width: 769px) {
+  .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: var(--font-size-lg);
+  }
+}
+
 .greeting {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (min-width: 769px) {
+  .greeting {
+    font-size: var(--font-size-lg);
+  }
 }
 
 .balanceSection {
@@ -68,6 +96,13 @@
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-border);
   text-align: center;
+}
+
+@media (min-width: 769px) {
+  .balanceSection {
+    padding: var(--spacing-2xl) var(--spacing-3xl);
+    margin: var(--spacing-2xl) 0;
+  }
 }
 
 .balanceLabel {
@@ -168,6 +203,16 @@
   }
 }
 
+@media (min-width: 769px) {
+  .content {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+    padding-bottom: var(--spacing-2xl);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
 
 
 .balanceAfter {
@@ -222,12 +267,26 @@
   margin-top: 20px;
 }
 
+@media (min-width: 769px) {
+  .accountsSection {
+    margin-top: var(--spacing-3xl);
+  }
+}
+
 .sectionTitle {
   font-size: 18px;
   font-weight: 600;
   color: var(--color-text-primary);
   margin-bottom: 16px;
   padding: 0 20px;
+}
+
+@media (min-width: 769px) {
+  .sectionTitle {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-xl);
+    padding: 0;
+  }
 }
 
 .accountsLoading {
@@ -240,6 +299,21 @@
   padding: 0 20px;
 }
 
+@media (min-width: 769px) {
+  .accountsList {
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .accountsList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .accountCard {
   background: var(--color-surface);
   border-radius: var(--radius-md);
@@ -248,6 +322,13 @@
   border: 1px solid var(--color-border);
   transition: all var(--transition-base);
   box-shadow: var(--shadow-sm);
+}
+
+@media (min-width: 769px) {
+  .accountCard {
+    padding: var(--spacing-lg);
+    margin-bottom: 0;
+  }
 }
 
 .accountCard:hover {

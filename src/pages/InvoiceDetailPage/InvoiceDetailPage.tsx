@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
+import { BackButton } from "../../components/BackButton/BackButton";
 import { useAuth } from "../../auth/useAuth";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
 import { useFetchInvoiceById } from "./useFetchInvoiceById";
@@ -85,10 +86,6 @@ export const InvoiceDetailPage: React.FC = () => {
     }
   };
 
-  const handleBack = () => {
-    navigate("/invoices");
-  };
-
   const handlePayInvoice = async () => {
     try {
       setLoading(true);
@@ -135,9 +132,7 @@ export const InvoiceDetailPage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={handleBack}>
-            ←
-          </button>
+          <BackButton />
           <div className={styles.pageTitle}>
           <div className={styles.titleText}>Invoice #{invoice.id}</div>
           <div className={styles.subtitle}>
