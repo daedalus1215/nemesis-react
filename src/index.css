@@ -90,6 +90,16 @@
   /* Layout */
   --bottom-nav-height: 70px;
   --content-bottom-padding: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 75px);
+  
+  /* Desktop Breakpoints */
+  --breakpoint-tablet: 769px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-large-desktop: 1280px;
+  
+  /* Desktop Layout */
+  --sidebar-width: 180px;
+  --max-content-width: 1400px;
+  --desktop-content-padding: var(--spacing-2xl);
 }
 
 html,
@@ -109,6 +119,13 @@ body {
   margin: auto;
 }
 
+@media (min-width: 769px) {
+  #root {
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+  }
+}
+
 h1 {
   font-size: var(--font-size-3xl);
   line-height: var(--line-height-tight);
@@ -126,3 +143,4 @@ a:hover {
   color: var(--color-primary-light);
   text-decoration: underline;
 }
+
