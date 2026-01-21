@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../auth/useAuth";
 import { useUserProfile } from "./useUserProfile";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import { BackButton } from "../../components/BackButton/BackButton";
 import { useNavigate } from "react-router-dom";
 import styles from "./CreateAccountPage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
@@ -90,9 +91,7 @@ export const CreateAccountPage: React.FC = () => {
     <div className={styles.createAccountPage}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={() => navigate(-1)}>
-            ←
-          </button>
+          <BackButton />
           <div className={styles.pageTitle}>
             <div className={styles.titleText}>Create Account</div>
             <div className={styles.subtitle}>

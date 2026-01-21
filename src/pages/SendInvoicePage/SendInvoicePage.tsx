@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import { BackButton } from "../../components/BackButton/BackButton";
 import { useAuth } from "../../auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import { MoneyDialPad } from "../MoneyPage/components/MoneyDialPad";
@@ -140,9 +141,7 @@ export const SendInvoicePage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={() => navigate(-1)}>
-            ←
-          </button>
+          <BackButton />
           <SignOutButton />
         </div>
 

@@ -3,6 +3,7 @@ import { useUserProfile } from "./useUserProfile";
 import { useAccounts } from "./useAccounts";
 import { useAccountBalances } from "./useAccountBalances";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import { BackButton } from "../../components/BackButton/BackButton";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
@@ -66,10 +67,6 @@ export const AccountsListPage: React.FC = () => {
     }
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -93,9 +90,7 @@ export const AccountsListPage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={handleBack}>
-            ←
-          </button>
+          <BackButton />
           <div className={styles.pageTitle}>
             <div className={styles.titleText}>My Accounts</div>
             <div className={styles.subtitle}>Manage your financial accounts</div>

@@ -4,6 +4,7 @@ import { useFetchInvoices } from "./useFetchInvoices";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
+import { BackButton } from "../../components/BackButton/BackButton";
 import { useAuth } from "../../auth/useAuth";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
 import { Fab } from "@mui/material";
@@ -28,10 +29,6 @@ export const InvoicePage: React.FC = () => {
       : [statusFilter];
 
   const { invoices, loading, error } = useFetchInvoices(statuses);
-
-  const handleBack = () => {
-    navigate(-1);
-  };
 
   const handleSendInvoice = () => {
     navigate("/invoices/send");
@@ -91,9 +88,7 @@ export const InvoicePage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={handleBack}>
-            ←
-          </button>
+          <BackButton />
           <div className={styles.pageTitle}>
             <div className={styles.titleText}>Invoices</div>
             <div className={styles.subtitle}>Manage your invoices</div>

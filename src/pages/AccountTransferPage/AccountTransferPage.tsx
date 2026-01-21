@@ -4,6 +4,7 @@ import { useUserProfile } from "./useUserProfile";
 import { useFetchAccounts } from "./useFetchAccounts";
 import { useAccountBalance } from "./useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
+import { BackButton } from "../../components/BackButton/BackButton";
 import { useNavigate } from "react-router-dom";
 import styles from "./AccountTransferPage.module.css";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
@@ -173,9 +174,7 @@ export const AccountTransferPage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={() => navigate(-1)}>
-            ←
-          </button>
+          <BackButton />
           <div className={styles.pageTitle}>
           <div className={styles.titleText}>Internal Transfer</div>
           <div className={styles.subtitle}>
