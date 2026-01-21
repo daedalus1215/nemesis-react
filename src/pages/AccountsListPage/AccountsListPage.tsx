@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useUserProfile } from "./useUserProfile";
 import { useAccounts } from "./useAccounts";
 import { useAccountBalances } from "./useAccountBalances";
@@ -6,11 +6,16 @@ import { BottomNavigation } from "../../components/BottomNavigation/BottomNaviga
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
+import { Fab } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import api from "../../api/axios.interceptor";
 import styles from "./AccountsListPage.module.css";
 
 export const AccountsListPage: React.FC = () => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const fabRef = useRef<HTMLButtonElement>(null);
+  
   const {
     userDetails,
     loading: profileLoading,
@@ -28,15 +33,26 @@ export const AccountsListPage: React.FC = () => {
   const { data: accountBalances, isLoading: balancesLoading } =
     useAccountBalances(accountIds);
 
+  const handleMenuToggle = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+  };
+
   const handleCreateAccount = () => {
+    handleMenuClose();
     navigate("/accounts/create");
   };
 
   const handleTransferFunds = () => {
+    handleMenuClose();
     navigate("/accounts/transfer");
   };
 
   const handleSendMoney = () => {
+    handleMenuClose();
     navigate("/money");
   };
 
@@ -78,7 +94,7 @@ export const AccountsListPage: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={handleBack}>
-            ← Back
+            ←
           </button>
           <div className={styles.pageTitle}>
             <div className={styles.titleText}>My Accounts</div>
@@ -87,18 +103,6 @@ export const AccountsListPage: React.FC = () => {
 
 
         <SignOutButton />
-        </div>
-        <div className={styles.actionButtons}>
-          <button className={styles.actionButton} onClick={handleCreateAccount}>
-            + Add Account
-          </button>
-          <button className={styles.actionButton} onClick={handleTransferFunds}>
-            Transfer Funds
-          </button>
-          <button className={styles.actionButton} onClick={handleSendMoney}>
-            Send Money
-          </button>
-
         </div>
       </div>
 
@@ -181,6 +185,37 @@ export const AccountsListPage: React.FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      <div className={styles.fabContainer}>
+        <Fab
+          ref={fabRef}
+          color="primary"
+          aria-label="Account actions"
+          onClick={handleMenuToggle}
+          className={styles.fab}
+        >
+          <Add />
+        </Fab>
+        {menuOpen && (
+          <div className={styles.actionMenu} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.menuItem} onClick={handleCreateAccount}>
+              <span className={styles.menuItemIcon}>+</span>
+              <span className={styles.menuItemText}>Add Account</span>
+            </button>
+            <button className={styles.menuItem} onClick={handleTransferFunds}>
+              <span className={styles.menuItemIcon}>⇄</span>
+              <span className={styles.menuItemText}>Transfer Funds</span>
+            </button>
+            <button className={styles.menuItem} onClick={handleSendMoney}>
+              <span className={styles.menuItemIcon}>$</span>
+              <span className={styles.menuItemText}>Send Money</span>
+            </button>
+          </div>
+        )}
+        {menuOpen && (
+          <div className={styles.menuBackdrop} onClick={handleMenuClose} />
+        )}
       </div>
 
       <BottomNavigation selected="Accounts" />
