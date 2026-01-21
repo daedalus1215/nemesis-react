@@ -67,7 +67,7 @@ export const AccountsListPage: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate("/");
+    navigate(-1);
   };
 
   const formatCurrency = (amount: number) => {

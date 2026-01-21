@@ -86,7 +86,7 @@ export const InvoiceDetailPage: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate("/invoices");
+    navigate(-1);
   };
 
   const handlePayInvoice = async () => {

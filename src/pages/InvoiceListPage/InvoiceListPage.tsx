@@ -30,7 +30,7 @@ export const InvoicePage: React.FC = () => {
   const { invoices, loading, error } = useFetchInvoices(statuses);
 
   const handleBack = () => {
-    navigate("/");
+    navigate(-1);
   };
 
   const handleSendInvoice = () => {

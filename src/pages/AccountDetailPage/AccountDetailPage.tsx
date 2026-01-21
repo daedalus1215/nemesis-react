@@ -36,7 +36,7 @@ export const AccountDetailPage: React.FC = () => {
   }
 
   const handleBack = () => {
-    navigate("/accounts");
+    navigate(-1);
   };
 
   const handleSetDefault = async () => {

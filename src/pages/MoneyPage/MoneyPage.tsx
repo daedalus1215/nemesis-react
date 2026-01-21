@@ -118,7 +118,7 @@ export const MoneyPage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <button className={styles.backButton} onClick={() => navigate("/")}>
+          <button className={styles.backButton} onClick={() => navigate(-1)}>
             ←
           </button>
           <div className={styles.pageTitle}>
