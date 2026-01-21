@@ -119,7 +119,7 @@ export const MoneyPage: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={() => navigate("/")}>
-            ← Back
+            ←
           </button>
           <div className={styles.pageTitle}>
           <div className={styles.titleText}>Money</div>

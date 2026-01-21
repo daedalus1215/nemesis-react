@@ -141,7 +141,7 @@ export const SendInvoicePage: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={() => navigate("/accounts")}>
-            ← Back
+            ←
           </button>
           <SignOutButton />
         </div>

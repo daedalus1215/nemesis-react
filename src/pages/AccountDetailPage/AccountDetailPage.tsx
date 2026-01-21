@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAccountDetail } from "../../hooks/useAccountDetail";
 import { useAccountBalance } from "../../hooks/useAccountBalance";
 import { BottomNavigation } from "../../components/BottomNavigation/BottomNavigation";
 import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
+import { Fab } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import api from "../../api/axios.interceptor";
 import styles from "./AccountDetailPage.module.css";
 import { TransactionHistorySection } from "./TransactionHistorySection/TransactionHistorySection";
@@ -14,6 +16,7 @@ export const AccountDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const accountId = parseInt(id || "0");
   const contentRef = useRef<HTMLDivElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const {
     account,
@@ -53,6 +56,14 @@ export const AccountDetailPage: React.FC = () => {
     navigate("/accounts/transfer");
   };
 
+  const handleMenuToggle = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+  };
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -77,7 +88,7 @@ export const AccountDetailPage: React.FC = () => {
       <div className={`${styles.header}`}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={handleBack}>
-            ← Back
+            ←
           </button>
           <div className={styles.pageTitle}>
               <div className={styles.titleText}>{account.name} - {account.accountType}</div>
@@ -89,23 +100,42 @@ export const AccountDetailPage: React.FC = () => {
             </div>
           <SignOutButton />
         </div>
-        <div className={styles.actionButtons}>
-          <button className={styles.actionButton} onClick={handleSendMoney}>
-            Send Money
-          </button>
-          <button className={styles.actionButton} onClick={handleTransferFunds}>
-            Transfer Funds
-          </button>
-          {!account.isDefault && (
-            <button className={styles.actionButton} onClick={handleSetDefault}>
-              Set as Default
-            </button>
-          )}
-        </div>
       </div>
 
       <div className={styles.content} ref={contentRef}>
         <TransactionHistorySection key={account.id} account={account} scrollContainerRef={contentRef} />
+      </div>
+
+      <div className={styles.fabContainer}>
+        <Fab
+          color="primary"
+          aria-label="Account actions"
+          onClick={handleMenuToggle}
+          className={styles.fab}
+        >
+          <Add />
+        </Fab>
+        {menuOpen && (
+          <div className={styles.actionMenu} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.menuItem} onClick={() => { handleMenuClose(); handleSendMoney(); }}>
+              <span className={styles.menuItemIcon}>$</span>
+              <span className={styles.menuItemText}>Send Money</span>
+            </button>
+            <button className={styles.menuItem} onClick={() => { handleMenuClose(); handleTransferFunds(); }}>
+              <span className={styles.menuItemIcon}>⇄</span>
+              <span className={styles.menuItemText}>Transfer Funds</span>
+            </button>
+            {!account.isDefault && (
+              <button className={styles.menuItem} onClick={() => { handleMenuClose(); handleSetDefault(); }}>
+                <span className={styles.menuItemIcon}>★</span>
+                <span className={styles.menuItemText}>Set as Default</span>
+              </button>
+            )}
+          </div>
+        )}
+        {menuOpen && (
+          <div className={styles.menuBackdrop} onClick={handleMenuClose} />
+        )}
       </div>
 
       <BottomNavigation selected="Accounts" />

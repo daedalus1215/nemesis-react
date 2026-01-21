@@ -72,7 +72,9 @@ export const HomePage: React.FC = () => {
           </div>
           <SignOutButton />
         </div>
+      </div>
 
+      <div className={styles.content}>
         <div className={styles.balanceSection}>
           <div className={styles.balanceLabel}>Total Balance</div>
           <div className={styles.balanceAmount}>
@@ -86,17 +88,14 @@ export const HomePage: React.FC = () => {
           <div className={styles.lastUpdated}>
             Balance last updated at {formatTime()} ↻
           </div>
+          <div className={styles.actionButtons}>
+            <button className={styles.actionButton} onClick={handleTransferClick}>
+              <TransferIcon />
+              Transfer
+            </button>
+          </div>
         </div>
 
-        <div className={styles.actionButtons}>
-          <button className={styles.actionButton} onClick={handleTransferClick}>
-            <TransferIcon />
-            Transfer
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.content}>
         <div className={styles.accountsSection}>
           <h3 className={styles.sectionTitle}>My Accounts</h3>
 

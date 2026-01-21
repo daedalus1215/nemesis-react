@@ -174,7 +174,7 @@ export const AccountTransferPage: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={() => navigate("/accounts")}>
-            ← Back
+            ←
           </button>
           <div className={styles.pageTitle}>
           <div className={styles.titleText}>Internal Transfer</div>

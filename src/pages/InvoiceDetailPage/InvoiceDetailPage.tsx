@@ -136,7 +136,7 @@ export const InvoiceDetailPage: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={handleBack}>
-            ← Back
+            ←
           </button>
           <div className={styles.pageTitle}>
           <div className={styles.titleText}>Invoice #{invoice.id}</div>

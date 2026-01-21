@@ -6,6 +6,8 @@ import { ErrorMessage } from "../../components/ErrorMessage/ErrorMessage";
 import { SignOutButton } from "../../components/SignOutButton/SignOutButton";
 import { useAuth } from "../../auth/useAuth";
 import { useFetchUsers } from "../../hooks/useFetchUsers";
+import { Fab } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import styles from "./InvoiceListPage.module.css";
 
 type InvoiceStatusFilter = "pending" | "all" | "draft" | "sent" | "paid" | "overdue" | "cancelled";
@@ -90,18 +92,13 @@ export const InvoicePage: React.FC = () => {
       <div className={styles.header}>
         <div className={styles.navigation}>
           <button className={styles.backButton} onClick={handleBack}>
-            ← Back
+            ←
           </button>
           <div className={styles.pageTitle}>
-          <div className={styles.titleText}>Invoices</div>
-          <div className={styles.subtitle}>Manage your invoices</div>
-        </div>
+            <div className={styles.titleText}>Invoices</div>
+            <div className={styles.subtitle}>Manage your invoices</div>
+          </div>
           <SignOutButton />
-        </div>
-        <div className={styles.actionButtons}>
-          <button className={styles.actionButton} onClick={handleSendInvoice}>
-            + Send Invoice
-          </button>
         </div>
       </div>
 
@@ -228,6 +225,17 @@ export const InvoicePage: React.FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      <div className={styles.fabContainer}>
+        <Fab
+          color="primary"
+          aria-label="Send invoice"
+          onClick={handleSendInvoice}
+          className={styles.fab}
+        >
+          <Add />
+        </Fab>
       </div>
 
       <BottomNavigation selected="Invoices" />
